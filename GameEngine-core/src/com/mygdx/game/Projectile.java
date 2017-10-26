@@ -50,7 +50,6 @@ public class Projectile {
 		fixtureDef.restitution = 0.8f; // bounciness
 		fixture = solidBody.createFixture(fixtureDef);
 		
-		solidBody.setBullet(true); // not yet used
 		calculateVelocity();
 	}
 

@@ -163,23 +163,9 @@ public class Player {
 	}
 	*/
 	
-	public void setPos(final float x, final float y, final float size) {
-		body.x = x;
-		body.y = y;
-		body.radius = size;
-	}
-	
 	public void setPos() {
 		solidBody.setUserData(body);
 		body.setPosition(solidBody.getPosition());
-	}
-	
-	public void setX(final float x) {
-		body.x = x;
-	}
-	
-	public void setY(final float y) {
-		body.y = y;
 	}
 	
 	public float getX() {

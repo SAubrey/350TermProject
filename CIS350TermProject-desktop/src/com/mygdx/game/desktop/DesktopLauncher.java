@@ -12,6 +12,7 @@ public class DesktopLauncher {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.setFromDisplayMode(displayMode);
 		config.title = "It's party time";
+		//config.fullscreen = false;
 		new LwjglApplication(new GameEngine(), config);
 		GameEngine.windowHeight = displayMode.height;
 		GameEngine.windowWidth = displayMode.width;

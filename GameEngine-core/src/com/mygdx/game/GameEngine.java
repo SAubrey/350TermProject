@@ -25,7 +25,7 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 //import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.TimeUtils;
+//import com.badlogic.gdx.utils.TimeUtils;
 
 public class GameEngine extends ApplicationAdapter {
 	
@@ -35,7 +35,7 @@ public class GameEngine extends ApplicationAdapter {
 	public static int playerRadius = 1; // in units of meters
 	public static float projectileRadius = 0.5f;
 	public static World world;
-	private final float shotTime = 0.5f;
+	private final float shotTime = 0.2f;
 	private final float playerAcceleration = 15.0f;
 	private SpriteBatch batch;
 	private Texture img;
@@ -49,13 +49,12 @@ public class GameEngine extends ApplicationAdapter {
 	private Array<Body> bodies;
 	private ArrayList<Body> deletableProjectiles;
 	private float x, y, shotAccumulator;
-	FPSLogger fps = new FPSLogger(); //debugging purposes
 	
 	@Override
 	public void create() {
 		batch = new SpriteBatch();
 		sr = new ShapeRenderer();
-		img = new Texture("grid.jpg");
+		//img = new Texture("grid.jpg");
 		world = new World(new Vector2(0, 0), true);
 		
 		camera = new OrthographicCamera();
@@ -104,7 +103,6 @@ public class GameEngine extends ApplicationAdapter {
 		checkClick();
 		
 		camera.update();
-		fps.log();
 		world.step(1 / 60f, 6, 2);
 	}
 	
@@ -251,7 +249,7 @@ public class GameEngine extends ApplicationAdapter {
 		wallBox.setAsBox(0, camera.viewportHeight);
 		wall.createFixture(wallBox, 0.0f);
 	}
-	
+	/*
 	public class FPSLogger {
 		long startTime;
 
@@ -260,7 +258,7 @@ public class GameEngine extends ApplicationAdapter {
 		}
 
 		// Logs the current frames per second to the console
-		/* 1,000,000,000ns == one second */
+		// 1,000,000,000ns == one second 
 		public void log() {
 			if (TimeUtils.nanoTime() - startTime > 1000000000)  {
 				Gdx.app.log("FPSLogger", "fps: " 
@@ -269,6 +267,7 @@ public class GameEngine extends ApplicationAdapter {
 			}
 		}
 	}
+	*/
 	
 	//Any asset should be disposed of manually before exiting the application
 	@Override
