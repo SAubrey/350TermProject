@@ -215,7 +215,7 @@ public class Projectile {
 	 */
 	public void setPos() {
 		solidBody.setUserData(body);
-		body.setPosition(solidBody.getPosition());
+		body.setPosition(solidBody.getPosition()); 
 	}
 	
 	/**

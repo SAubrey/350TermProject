@@ -17,7 +17,7 @@ import com.badlogic.gdx.Game;
 public class Testing {
 
 	/**
-	 * @throws Exception
+	 * @throws Exception 
 	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
