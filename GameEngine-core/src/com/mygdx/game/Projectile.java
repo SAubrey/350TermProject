@@ -9,24 +9,81 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 
+/**
+ * @author Sean Aubrey, Gabriel Fountain, Brandon Conn
+ *
+ */
 public class Projectile {
 	
+	/**  */
 	private final int scale = GameEngine.SCALE;
+	
+	/**  */
 	private final float despawnTime = 3.0f;
+	
+	/**  */
 	private int windowHeight = GameEngine.windowHeight;
+	
+	/**  */
 	private float viewportHeight = scale(windowHeight);
+	
+	/**  */
 	private float maxVelocity = 70;
-    private float size = 0.5f;
-    private float playerX, playerY, mouseX, mouseY, accumulator;
-    private Vector2 vel, vec, quad;
+    
+	/**  */
+	private float size = 0.5f;
+    
+	/**  */
+	private float playerX;
+    
+	/**  */
+	private float playerY;
+	
+	/**  */
+	private float mouseX;
+	
+	/**  */
+	private float mouseY;
+	
+	/**  */
+	private float accumulator;
+	
+	/**  */
+	private Vector2 vel;
+	
+	/**  */
+	private Vector2 vec;
+	
+	/**  */
+	private Vector2 quad;
+	
+	/**  */
 	private Circle body;
+	
+	/**  */
 	private BodyDef bodyDef;
+	
+	/**  */
 	private Body solidBody;
+	
+	/**  */
 	private CircleShape circle;
+	
+	/**  */
 	private FixtureDef fixtureDef;
+	
+	/**  */
 	@SuppressWarnings("unused")
+	
+	/**  */
 	private Fixture fixture;
 	
+	/**
+	 * @param playerX
+	 * @param playerY
+	 * @param mouseX
+	 * @param mouseY
+	 */
 	public Projectile(final float playerX, final float playerY,
 			final float mouseX, final float mouseY) {
 		this.mouseX = scale(mouseX);
@@ -53,7 +110,7 @@ public class Projectile {
 		calculateVelocity();
 	}
 
-	/*
+	/**
 	 * pixel locations must be adapted to the viewport
 	 * works for first sector.
 	 * Formula to determine X + Y velocities: BF(n) = B(n/(n+1)) + B(1/(n+1))
@@ -91,15 +148,23 @@ public class Projectile {
 		solidBody.setLinearVelocity(vel);
 	}
 	
-	/*
+	/**
 	 * Determines which corner of the player to spawn the projectile to avoid
 	 * intersecting with the player
+	 * 
+	 * @return
 	 */
 	private Vector2 determineQuadrant() {
-		quad = new Vector2();
+		
+		/**  */
 		float dX = mouseX - playerX;
+		
+		/**  */
 		float dY = (viewportHeight - mouseY) - playerY;
+		
+		/**  */
 		float displacement = 0.05f;
+		quad = new Vector2();
 		
 		if (dX > 0) {
 			if (dY > 0) {
@@ -121,8 +186,15 @@ public class Projectile {
 		return quad;
 	}
 	
+	/**
+	 * 
+	 */
 	public void simulateResistance() {
+		
+		/**  */
 		float xVelocity = solidBody.getLinearVelocity().x;
+		
+		/**  */
 		float yVelocity = solidBody.getLinearVelocity().y;
 		
 		if (xVelocity < 0)  {
@@ -138,24 +210,37 @@ public class Projectile {
 		}
 	}
 	
+	/**
+	 * 
+	 */
 	public void setPos() {
 		solidBody.setUserData(body);
 		body.setPosition(solidBody.getPosition());
 	}
 	
-	/*
+	/**
 	 * Bodies can't be deleted during a physics step, add body to a list then delete
 	 * in GameEngine after physics step
+	 * 
+	 * @param time
+	 * @return
 	 */
 	public boolean deletable(final float time) {
 		accumulator += time;
 		return (accumulator >= despawnTime);
 	}
 	
+	/**
+	 * @return
+	 */
 	public Body getBody() {
 		return solidBody;
 	}
 	
+	/**
+	 * @param val
+	 * @return
+	 */
 	public float scale(final float val) {
 		return val / scale;
 	}

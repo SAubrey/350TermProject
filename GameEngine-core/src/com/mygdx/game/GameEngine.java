@@ -1,14 +1,6 @@
-/*
- * libGDX game development library suite
- * Shapes drawn with ShapeRenderer
- * Physics calculated with Box2d
- * 
- */
-
 package com.mygdx.game;
 
 import java.util.ArrayList;
-
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -22,34 +14,92 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
-//import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 //import com.badlogic.gdx.utils.TimeUtils;
+//import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 
+/**
+ * @author Sean Aubrey, Gabriel Fountain, Brandon Conn
+ *
+ * libGDX game development library suite
+ * Shapes drawn with ShapeRenderer
+ * Physics calculated with Box2d
+ */
 public class GameEngine extends ApplicationAdapter {
 	
+	/**  */
 	public static final int SCALE = 6;
-	public static int windowHeight;
-	public static int windowWidth;
-	public static int playerRadius = 1; // in units of meters
-	public static float projectileRadius = 0.5f;
-	public static World world;
-	private final float shotTime = 0.2f;
-	private final float playerAcceleration = 15.0f;
-	private SpriteBatch batch;
-	private Texture img;
-	private OrthographicCamera camera;
-	private ShapeRenderer sr;
-	//private Box2DDebugRenderer debugRenderer;
-	private PolygonShape xWallBox, wallBox;
-	private Body wall, xWall;
-	private BodyDef wallDef, xWallDef;
-	private Player player;
-	private Array<Body> bodies;
-	private ArrayList<Body> deletableProjectiles;
-	private float x, y, shotAccumulator;
 	
+	/**  */
+	public static int windowHeight;
+	
+	/**  */
+	public static int windowWidth;
+	
+	/**  */
+	public static int playerRadius = 1; // in units of meters
+	
+	/**  */
+	public static float projectileRadius = 0.5f;
+	
+	/**  */
+	public static World world;
+	
+	/**  */
+	private final float shotTime = 0.2f;
+	
+	/**  */
+	private final float playerAcceleration = 15.0f;
+	
+	/**  */
+	private SpriteBatch batch;
+	
+	/**  */
+	private Texture img;
+	
+	/**  */
+	private OrthographicCamera camera;
+	
+	/**  */
+	private ShapeRenderer sr;
+	
+	/**  */
+	//private Box2DDebugRenderer debugRenderer;
+	
+	/**  */
+	private PolygonShape xWallBox, wallBox;
+	
+	/**  */
+	private Body wall, xWall;
+	
+	/**  */
+	private BodyDef wallDef;
+	
+	/**  */
+	private BodyDef xWallDef;
+	
+	/**  */
+	private Player player;
+	
+	/**  */
+	private Array<Body> bodies;
+	
+	/**  */
+	private ArrayList<Body> deletableProjectiles;
+	
+	/**  */
+	private float x;
+	
+	/**  */
+	private float y;
+	
+	/**  */
+	private float shotAccumulator;
+	
+	/**
+	 * 
+	 */
 	@Override
 	public void create() {
 		batch = new SpriteBatch();
@@ -68,11 +118,12 @@ public class GameEngine extends ApplicationAdapter {
 		createBorders();
 	}
 
-	/*
+	/**
 	 * This method updates constantly. 
 	 * All user control can be received directly from 
 	 * here instead of making a controller class. (for now, anyway)
 	 */
+
 	@Override
 	public void render() {
 		Gdx.gl.glClearColor(0, 0, 0, 0);
@@ -106,7 +157,9 @@ public class GameEngine extends ApplicationAdapter {
 		world.step(1 / 60f, 6, 2);
 	}
 	
-	//create projectile, send it touch vector2
+	/**
+	 * create projectile, send it touch vector2
+	 */
 	private void checkClick() {
 		shotAccumulator += Gdx.graphics.getDeltaTime();
 		if (shotAccumulator >= shotTime) {
@@ -118,6 +171,9 @@ public class GameEngine extends ApplicationAdapter {
 		}
 	}
 	
+	/**
+	 * 
+	 */
 	private void manageBodies() {
 		deletableProjectiles = player.manageProjectiles(Gdx.graphics.getDeltaTime());
 		world.getBodies(bodies);
@@ -136,6 +192,9 @@ public class GameEngine extends ApplicationAdapter {
 		}
 	}
 	
+	/**
+	 * 
+	 */
 	private void checkMovement() {
 		if (Gdx.input.isKeyPressed(Input.Keys.A)) {
 			player.moveHorizontal(-playerAcceleration);
@@ -188,17 +247,23 @@ public class GameEngine extends ApplicationAdapter {
 	}
 	*/
 	
-	/*
+	/**
 	 * Scales pixel quantity to the camera's viewport size.
 	 * Because the physics of Box2D take the object sizes as units of meters
 	 * to calculate mass, etc. In other words,
 	 * rather than scaling the objects to 
 	 * the camera, we scale the camera to the object.
+	 * 
+	 * @param val
+	 * @return
 	 */
 	private float scale(final float val) {
 		return val / SCALE;
 	}
 	
+	/**
+	 * 
+	 */
 	private void checkResized() {
 		if (Gdx.graphics.getWidth() != windowWidth || Gdx.graphics.getHeight() != windowHeight) {
 			windowWidth = Gdx.graphics.getWidth();
@@ -207,8 +272,11 @@ public class GameEngine extends ApplicationAdapter {
 		}
 	}
 	
-	/*
+	/**
 	 * Adjusts camera view to new window dimensions
+	 * 
+	 * @param width
+	 * @param height
 	 */
 	@Override
 	public void resize(final int width, final int height) {
@@ -216,8 +284,11 @@ public class GameEngine extends ApplicationAdapter {
         camera.viewportWidth = (scale(windowHeight) / height) * width;
 	}
 	
+	/**
+	 * 
+	 */
 	private void createBorders() {
-		// floor
+		// Floor
 		xWallDef = new BodyDef();
 		xWallDef.position.set(0, 0);
 		
@@ -227,13 +298,13 @@ public class GameEngine extends ApplicationAdapter {
 		xWallBox.setAsBox(camera.viewportWidth, 0.0f);
 		xWall.createFixture(xWallBox, 0.0f);
 		
-		// ceiling
+		// Ceiling
 		xWallDef.position.set(0, camera.viewportHeight);
 		xWall = world.createBody(xWallDef);
 		xWallBox.setAsBox(camera.viewportWidth, 0.0f);
 		xWall.createFixture(xWallBox, 0.0f);
 		
-		// wall 1
+		// Wall 1
 		wallDef = new BodyDef();
 		wallDef.position.set(0, 0);
 		
@@ -243,7 +314,7 @@ public class GameEngine extends ApplicationAdapter {
 		wallBox.setAsBox(0, camera.viewportHeight);
 		wall.createFixture(wallBox, 0.0f);
 		
-		// wall 2
+		// Wall 2
 		wallDef.position.set(camera.viewportWidth, 0);
 		wall = world.createBody(wallDef);
 		wallBox.setAsBox(0, camera.viewportHeight);
@@ -269,7 +340,9 @@ public class GameEngine extends ApplicationAdapter {
 	}
 	*/
 	
-	//Any asset should be disposed of manually before exiting the application
+	/**
+	 * Any asset should be disposed of manually before exiting the application
+	 */
 	@Override
 	public void dispose() {
 		batch.dispose();

@@ -10,25 +10,63 @@ import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 
+/**
+ * @author Sean Aubrey, Gabriel Fountain, Brandon Conn
+ *
+ */
 public class Player {
 	
+	/** */
 	private final int scale = GameEngine.SCALE;
+	
+	/** */
 	private int windowHeight = GameEngine.windowHeight;
+	
+	/** */
 	private int windowWidth = GameEngine.windowWidth;
+	
+	/** */
 	private int playerRadius = GameEngine.playerRadius;
+	
+	/** */
 	private float viewportHeight = scale(windowHeight);
+	
+	/** */
 	private float viewportWidth = scale(windowWidth);
+	
+	/** */
 	private float maxVelocity = 50;
+	
+	/** */
 	private Circle body;
+	
+	/** */
 	private BodyDef bodyDef;
+	
+	/** */
 	private Body solidBody;
+	
+	/** */
 	private CircleShape circle;
+	
+	/** */
 	private FixtureDef fixtureDef;
+	
+	/** */
 	@SuppressWarnings("unused")
+	
+	/** */
 	private Fixture fixture;
+	
+	/** */
 	private ArrayList<Projectile> projectiles; // List of all existing projectiles
+	
+	/** */
 	private ArrayList<Body> deletableBodies;
 	
+	/**
+	 * 
+	 */
 	public Player() {
 		body = new Circle();
 		bodyDef = new BodyDef();
@@ -49,11 +87,19 @@ public class Player {
 		deletableBodies = new ArrayList<Body>();
 	}
 	
+	/**
+	 * @param mouseX
+	 * @param mouseY
+	 */
 	public void fireProjectile(final float mouseX, final float mouseY) {
 		Projectile p = new Projectile(body.x, body.y, mouseX, mouseY);
 		projectiles.add(p);
 	}
 	
+	/**
+	 * @param time
+	 * @return
+	 */
 	public ArrayList<Body> manageProjectiles(final float time) {
 		deletableBodies.clear();
 		
@@ -69,16 +115,20 @@ public class Player {
 		return deletableBodies;
 	}
 	
-	/*
+	/**
 	 * Called in GameEngine. 
 	 * When a directional button is not being pressed,(indicated by caseNum), 
 	 * and the velocity of that direction is not zero,
 	 * then accelerate negatively to cancel velocity even while accelerating
 	 * in other directions.
 	 * 
+	 * @param caseNum
 	 */
 	public void simulateResistance(final int caseNum) {
+		
+		/**  */
 		float xVelocity = solidBody.getLinearVelocity().x;
+		/**  */
 		float yVelocity = solidBody.getLinearVelocity().y;
 		
 		if (caseNum == 1 && xVelocity < 0)  {
@@ -94,13 +144,15 @@ public class Player {
 		}
 	}
 	
-	/*
-	 * 
+	/**
 	 * For every render, detects if directional velocity is greater than
 	 * the maximum velocity and sets it at the max.
 	 */
 	public void velocityCap() {
+		
+		/**  */
 		float xVelocity = solidBody.getLinearVelocity().x;
+		/**  */
 		float yVelocity = solidBody.getLinearVelocity().y;
 		
 		if (xVelocity > maxVelocity) {
@@ -116,10 +168,16 @@ public class Player {
 		}
 	}
 	
+	/**
+	 * @param direction
+	 */
 	public void moveVertical(final float direction) {
 		solidBody.applyForceToCenter(0, direction, true);
 	}
 	
+	/**
+	 * @param direction
+	 */
 	public void moveHorizontal(final float direction) {
 		solidBody.applyForceToCenter(direction, 0, true);
 	}
@@ -163,19 +221,32 @@ public class Player {
 	}
 	*/
 	
+	/**
+	 * 
+	 */
 	public void setPos() {
 		solidBody.setUserData(body);
 		body.setPosition(solidBody.getPosition());
 	}
 	
+	/**
+	 * @return
+	 */
 	public float getX() {
 		return body.x;
 	}
 	
+	/**
+	 * @return
+	 */
 	public float getY() {
 		return body.y;
 	}
 	
+	/**
+	 * @param val
+	 * @return
+	 */
 	public float scale(final float val) {
 		return val / scale;
 	}
