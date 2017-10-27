@@ -6,7 +6,7 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.mygdx.game.GameEngine;
 
 /**
- * @author Sean Aubrey, Gabriel Fountain, Brandon Conn 
+ * @author Sean Aubrey, Gabriel Fountain, Brandon Conn
  *
  */
 public class DesktopLauncher {	

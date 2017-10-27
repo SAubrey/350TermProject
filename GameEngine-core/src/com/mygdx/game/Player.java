@@ -11,7 +11,7 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 
 /**
- * @author Sean Aubrey, Gabriel Fountain, Brandon Conn 
+ * @author Sean Aubrey, Gabriel Fountain, Brandon Conn
  *
  */
 public class Player {

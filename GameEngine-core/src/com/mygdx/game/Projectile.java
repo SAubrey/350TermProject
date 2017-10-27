@@ -10,7 +10,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 
 /**
- * @author Sean Aubrey, Gabriel Fountain, Brandon Conn 
+ * @author Sean Aubrey, Gabriel Fountain, Brandon Conn
  *
  */
 public class Projectile {
