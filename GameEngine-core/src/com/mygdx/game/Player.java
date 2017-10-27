@@ -23,13 +23,13 @@ public class Player {
 	private final int scale = GameEngine.SCALE;
 	
 	/** Y value in pixels.*/
-	private int windowHeight = GameEngine.windowHeight;
+	private int windowHeight = GameEngine.getWinHeight();
 	
 	/** X value in pixels.*/
-	private int windowWidth = GameEngine.windowWidth;
+	private int windowWidth = GameEngine.getWinWidth();
 	
 	/** Circular player size in meters.*/
-	private int playerRadius = GameEngine.playerRadius;
+	private float playerRadius = GameEngine.getPlayRadius();
 	
 	/** Scaled Y value of the window. */
 	private float viewportHeight = scale(windowHeight);
@@ -73,7 +73,7 @@ public class Player {
 		bodyDef = new BodyDef();
 		bodyDef.type = BodyType.DynamicBody;
 		bodyDef.position.set(viewportWidth / 2, viewportHeight / 2);
-		solidBody = GameEngine.world.createBody(bodyDef);
+		solidBody = GameEngine.getWorld().createBody(bodyDef);
 		circle = new CircleShape();
 		circle.setRadius(playerRadius);
 		

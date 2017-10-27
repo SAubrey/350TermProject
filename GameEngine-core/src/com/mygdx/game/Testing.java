@@ -15,10 +15,11 @@ import com.badlogic.gdx.Game;
  *
  */
 public class Testing {
-
+/*
 	/**
 	 * @throws Exception
 	 */
+	/*
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		GameEngine game = new GameEngine();
@@ -27,6 +28,7 @@ public class Testing {
 	/**
 	 * @throws Exception
 	 */
+	/*
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
 		
@@ -35,10 +37,11 @@ public class Testing {
 	/**
 	 * 
 	 */
+	/*
 	@Test
 	public void test() {
 		GameEngine game = new GameEngine();
 		
 	}
-
+	*/
 }

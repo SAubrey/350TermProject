@@ -27,7 +27,7 @@ public class Projectile {
 	private final float despawnTime = 3.0f;
 	
 	/**  Y value in pixels.*/
-	private int windowHeight = GameEngine.windowHeight;
+	private int windowHeight = GameEngine.getWinHeight();
 	
 	/** Scaled Y value of the window. */
 	private float viewportHeight = scale(windowHeight);
@@ -36,7 +36,7 @@ public class Projectile {
 	private float maxVelocity = 70;
     
 	/**  Size of physical body.*/
-	private float size = 0.5f;
+	private float size = GameEngine.getProjRadius();
     
 	/**  Player's X position.*/
 	private float playerX;
@@ -101,7 +101,7 @@ public class Projectile {
 		bodyDef.type = BodyType.DynamicBody;
 		vec = new Vector2(determineQuadrant());
 		bodyDef.position.set(playerX + vec.x, playerY + vec.y);
-		solidBody = GameEngine.world.createBody(bodyDef);
+		solidBody = GameEngine.getWorld().createBody(bodyDef);
 		circle = new CircleShape();
 		circle.setRadius(size);
 		

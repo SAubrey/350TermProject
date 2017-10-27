@@ -17,7 +17,7 @@ public class DesktopLauncher {
 	/**
 	 * Detects computer's window size and sets the window to 
 	 * these dimensions to be fullscreen.
-	 * @param arg
+	 * @param arg main
 	 */
 	public static void main (String[] arg) {
 		DisplayMode displayMode = LwjglApplicationConfiguration.getDesktopDisplayMode();
@@ -26,7 +26,7 @@ public class DesktopLauncher {
 		config.title = "It's party time";
 		//config.fullscreen = false;
 		new LwjglApplication(new GameEngine(), config);
-		GameEngine.windowHeight = displayMode.height;
-		GameEngine.windowWidth = displayMode.width;
+		GameEngine.setWinHeight(displayMode.height);
+		GameEngine.setWinWidth(displayMode.width);
 	}
 }

@@ -1,4 +1,3 @@
-
 package com.mygdx.game;
 
 import java.util.ArrayList;
@@ -20,7 +19,7 @@ import com.badlogic.gdx.utils.Array;
 /**
  * GameEngine class is the core class that updates the game state 
  * graphically and physically every frame. It populates the window 
- * with a world, its initial {@link Box2D} physics objects, and its 
+ * with a world, its initial Box2D physics objects, and its 
  * camera. It also manages user input.
  * 
  * @author Sean Aubrey, Gabriel Fountain, Brandon Conn
@@ -31,19 +30,19 @@ public class GameEngine extends ApplicationAdapter {
 	public static final int SCALE = 6;
 	
 	/**  Y value in pixels.*/
-	public static int windowHeight;
+	private static int windowHeight;
 	
 	/**  X value in pixels.*/
-	public static int windowWidth;
+	private static int windowWidth;
 	
 	/**  Circular player size in meters.*/
-	public static int playerRadius = 1;
+	private static float playerRadius = 1;
 	
 	/**  Circular projectile size in meters.*/
-	public static float projectileRadius = 0.5f;
+	private static float projectileRadius = 0.5f;
 	
 	/**  Box2D physical object management plane.*/
-	public static World world;
+	private static World world;
 	
 	/**  Time between shots in seconds.*/
 	private final float shotTime = 0.2f;
@@ -98,7 +97,7 @@ public class GameEngine extends ApplicationAdapter {
 	public void create() {
 		batch = new SpriteBatch();
 		sr = new ShapeRenderer();
-		//img = new Texture("grid.jpg");
+
 		world = new World(new Vector2(0, 0), true);
 		
 		camera = new OrthographicCamera();
@@ -275,8 +274,8 @@ public class GameEngine extends ApplicationAdapter {
 	/**
 	 * Adjusts camera view to new window dimensions.
 	 * 
-	 * @param width
-	 * @param height
+	 * @param width window width.
+	 * @param height window height.
 	 */
 	@Override
 	public void resize(final int width, final int height) {
@@ -339,6 +338,62 @@ public class GameEngine extends ApplicationAdapter {
 		}
 	}
 	*/
+	
+	/**
+	 * Returns the world instance.
+	 * @return world.
+	 */
+	public static World getWorld() {
+		return world;
+	}
+	
+	/**
+	 * Returns the size of Projectile's radius.
+	 * @return projectile radius.
+	 */
+	public static float getProjRadius() {
+		return projectileRadius;
+	}
+	
+	/**
+	 * Returns the size of the Player's radius.
+	 * @return player radius.
+	 */
+	public static float getPlayRadius() {
+		return playerRadius;
+	}
+	
+	/**
+	 * Returns the window's height in pixels.
+	 * @return window height.
+	 */
+	public static int getWinHeight() {
+		return windowHeight;
+	}
+	
+	/**
+	 * Sets the window's height in pixels.
+	 * @param height window height.
+	 */
+	public static void setWinHeight(final int height) {
+		windowHeight = height;
+	}
+	
+	/**
+	 * Returns the window's width in pixels.
+	 * @return window width.
+	 */
+	public static int getWinWidth() {
+		return windowWidth;
+	}
+	
+	/**
+	 * Sets the window's width in pixels.
+	 * @param width window width.
+	 */
+	public static void setWinWidth(final int width) {
+		windowWidth = width;
+	}
 	
 	/**
 	 * Certain assets should be disposed of manually before exiting the application.
