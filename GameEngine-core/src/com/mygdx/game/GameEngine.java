@@ -1,20 +1,12 @@
-/**
- * libGDX game development library suite
- * Shapes drawn with ShapeRenderer
- * Physics calculated with Box2d
- * @author Sean
- * @version 1.0
- */
+
 package com.mygdx.game;
 
 import java.util.ArrayList;
-
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -22,34 +14,86 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
-//import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
-//import com.badlogic.gdx.utils.TimeUtils;
 
+/**
+ * GameEngine class is the core class that updates the game state 
+ * graphically and physically every frame. It populates the window 
+ * with a world, its initial {@link Box2D} physics objects, and its 
+ * camera. It also manages user input.
+ * 
+ * @author Sean Aubrey, Gabriel Fountain, Brandon Conn
+ */
 public class GameEngine extends ApplicationAdapter {
 	
-	public static final int SCALE = 30;
-	public static int windowHeight;
-	public static int windowWidth;
-	public static int playerRadius = 1; // in units of meters
-	public static float projectileRadius = 0.5f;
-	public static World world;
-	private final float shotTime = 0.2f;
-	private final float playerAcceleration = 15.0f;
-	private SpriteBatch batch;
-	private Texture img;
-	private OrthographicCamera camera;
-	private ShapeRenderer sr;
-	//private Box2DDebugRenderer debugRenderer;
-	private PolygonShape xWallBox, wallBox;
-	private Body wall, xWall;
-	private BodyDef wallDef, xWallDef;
-	private Player player;
-	private Array<Body> bodies;
-	private ArrayList<Body> deletableProjectiles;
-	private float x, y, shotAccumulator;
+	/** Window to viewport dimension ratio. */
+	public static final int SCALE = 6;
 	
+	/**  Y value in pixels.*/
+	public static int windowHeight;
+	
+	/**  X value in pixels.*/
+	public static int windowWidth;
+	
+	/**  Circular player size in meters.*/
+	public static int playerRadius = 1;
+	
+	/**  Circular projectile size in meters.*/
+	public static float projectileRadius = 0.5f;
+	
+	/**  Box2D physical object management plane.*/
+	public static World world;
+	
+	/**  Time between shots in seconds.*/
+	private final float shotTime = 0.2f;
+	
+	/**  Applied acceleration upon movement in m/s^2.*/
+	private final float playerAcceleration = 15.0f;
+	
+	/**  Collects visual elements to be updated together.*/
+	private SpriteBatch batch;
+	
+	/**  A camera with an orthographic projection. */
+	private OrthographicCamera camera;
+	
+	/**  Collects shape objects to be updated together.*/
+	private ShapeRenderer sr;
+	
+	/**  X and Y physical wall shapes.*/
+	private PolygonShape xWallBox, wallBox;
+	
+	/**  X and Y physical wall bodies.*/
+	private Body wall, xWall;
+	
+	/**  Characteristics of Y wall.*/
+	private BodyDef wallDef;
+	
+	/**  Characteristics of X wall.*/
+	private BodyDef xWallDef;
+	
+	/**  Player object.*/
+	private Player player;
+	
+	/**  All bodies detected in the world.*/
+	private Array<Body> bodies;
+	
+	/**  Projectile bodies to be deleted.*/
+	private ArrayList<Body> deletableProjectiles;
+	
+	/**  X position of the Player.*/
+	private float x;
+	
+	/**  Y position of the Player.*/
+	private float y;
+	
+	/**  Time counter before a shot is fired.*/
+	private float shotAccumulator;
+	
+	/**
+	 * Called once at creation to set up initial graphical objects 
+	 * and create constant physical objects.
+	 */
 	@Override
 	public void create() {
 		batch = new SpriteBatch();
@@ -68,10 +112,12 @@ public class GameEngine extends ApplicationAdapter {
 		createBorders();
 	}
 
-	/*
+	/**
 	 * This method updates constantly. 
-	 * All user control can be received directly from 
-	 * here instead of making a controller class. (for now, anyway)
+	 * Updates graphical state.
+	 * Updates physical state.
+	 * Listens for user input.
+	 * Performs a physics step of the world.
 	 */
 	@Override
 	public void render() {
@@ -83,7 +129,7 @@ public class GameEngine extends ApplicationAdapter {
 		y = player.getY();
 		player.setPos();
 		
-		//ShapeRenderer works like batch with begin/end
+		// Render images between begin and end. 
 		sr.setProjectionMatrix(camera.combined);
 		sr.begin(ShapeType.Filled);
 		sr.setColor(1, 1, 1, 1);
@@ -91,8 +137,7 @@ public class GameEngine extends ApplicationAdapter {
 		manageBodies();
 		sr.end();
 		
-		//Render images between batch.begin and batch.end. 
-		//Collects and sends them together for efficiency
+		// Render images between batch.begin and batch.end. 
 		batch.begin();
 		batch.setProjectionMatrix(camera.combined);
 		batch.end();
@@ -106,7 +151,11 @@ public class GameEngine extends ApplicationAdapter {
 		world.step(1 / 60f, 6, 2);
 	}
 	
-	//create projectile, send it touch vector2
+	/**
+	 * Updates a time accumulator with the time between frames
+	 * and tells Player to fire a projectile if the mouse button
+	 * clicked or held down.
+	 */
 	private void checkClick() {
 		shotAccumulator += Gdx.graphics.getDeltaTime();
 		if (shotAccumulator >= shotTime) {
@@ -118,6 +167,10 @@ public class GameEngine extends ApplicationAdapter {
 		}
 	}
 	
+	/**
+	 * Retrieves all bodies in the world and bodies to be deleted to delete
+	 * those that match. Also updates each body's graphical position.
+	 */
 	private void manageBodies() {
 		deletableProjectiles = player.manageProjectiles(Gdx.graphics.getDeltaTime());
 		world.getBodies(bodies);
@@ -135,6 +188,11 @@ public class GameEngine extends ApplicationAdapter {
 		}
 	}
 	
+	/**
+	 * Checks the source of user input and sends which direction
+	 * to be moved to Player. Also lets Player know if a key is not being 
+	 * pressed so that that direction's movement can be slowed.
+	 */
 	private void checkMovement() {
 		if (Gdx.input.isKeyPressed(Input.Keys.A)) {
 			player.moveHorizontal(-playerAcceleration);
@@ -187,17 +245,24 @@ public class GameEngine extends ApplicationAdapter {
 	}
 	*/
 	
-	/*
-	 * Scales pixel quantity to the camera's viewport size.
-	 * Because the physics of Box2D take the object sizes as units of meters
-	 * to calculate mass, etc. In other words,
+	/**
+	 * Scales pixel dimensions to the camera's viewport size so that physical
+	 * object dimensions can be declared in units of meters to function 
+	 * correctly within Box2D. In other words,
 	 * rather than scaling the objects to 
-	 * the camera, we scale the camera to the object.
+	 * the window size, we scale the window size to the object.
+	 * 
+	 * @param val window dimension
+	 * @return viewport dimension
 	 */
 	private float scale(final float val) {
 		return val / SCALE;
 	}
 	
+	/**
+	 * Checks if the window has been resized and retrieves
+	 * and assigns their new values.
+	 */
 	private void checkResized() {
 		if (Gdx.graphics.getWidth() != windowWidth 
 				|| Gdx.graphics.getHeight() != windowHeight) {
@@ -207,8 +272,11 @@ public class GameEngine extends ApplicationAdapter {
 		}
 	}
 	
-	/*
-	 * Adjusts camera view to new window dimensions
+	/**
+	 * Adjusts camera view to new window dimensions.
+	 * 
+	 * @param width
+	 * @param height
 	 */
 	@Override
 	public void resize(final int width, final int height) {
@@ -216,8 +284,11 @@ public class GameEngine extends ApplicationAdapter {
         camera.viewportWidth = (scale(windowHeight) / height) * width;
 	}
 	
+	/**
+	 * Generates physical boundaries at the edge of the window.
+	 */
 	private void createBorders() {
-		// floor
+		// Floor
 		xWallDef = new BodyDef();
 		xWallDef.position.set(0, 0);
 		
@@ -227,13 +298,13 @@ public class GameEngine extends ApplicationAdapter {
 		xWallBox.setAsBox(camera.viewportWidth, 0.0f);
 		xWall.createFixture(xWallBox, 0.0f);
 		
-		// ceiling
+		// Ceiling
 		xWallDef.position.set(0, camera.viewportHeight);
 		xWall = world.createBody(xWallDef);
 		xWallBox.setAsBox(camera.viewportWidth, 0.0f);
 		xWall.createFixture(xWallBox, 0.0f);
 		
-		// wall 1
+		// Wall 1
 		wallDef = new BodyDef();
 		wallDef.position.set(0, 0);
 		
@@ -243,7 +314,7 @@ public class GameEngine extends ApplicationAdapter {
 		wallBox.setAsBox(0, camera.viewportHeight);
 		wall.createFixture(wallBox, 0.0f);
 		
-		// wall 2
+		// Wall 2
 		wallDef.position.set(camera.viewportWidth, 0);
 		wall = world.createBody(wallDef);
 		wallBox.setAsBox(0, camera.viewportHeight);
@@ -269,11 +340,12 @@ public class GameEngine extends ApplicationAdapter {
 	}
 	*/
 	
-	//Any asset should be disposed of manually before exiting the application
+	/**
+	 * Certain assets should be disposed of manually before exiting the application.
+	 */
 	@Override
 	public void dispose() {
 		batch.dispose();
-		img.dispose();
 		sr.dispose();
 		xWallBox.dispose();
 		wallBox.dispose();
