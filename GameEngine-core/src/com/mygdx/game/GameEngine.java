@@ -20,7 +20,7 @@ import com.badlogic.gdx.utils.Array;
 //import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 
 /**
- * @author Sean Aubrey, Gabriel Fountain, Brandon Conn
+ * @author Sean Aubrey, Gabriel Fountain, Brandon Conn 
  *
  * libGDX game development library suite
  * Shapes drawn with ShapeRenderer
