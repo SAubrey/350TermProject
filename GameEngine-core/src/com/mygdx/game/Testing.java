@@ -11,7 +11,7 @@ import com.badlogic.gdx.Game;
 //import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 
 /**
- * @author Sean Aubrey, Gabriel Fountain, Brandon Conn
+ * @author Sean Aubrey, Gabriel Fountain, Brandon Conn 
  *
  */
 public class Testing {
