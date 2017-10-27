@@ -1,10 +1,10 @@
-/*
+/**
  * libGDX game development library suite
  * Shapes drawn with ShapeRenderer
  * Physics calculated with Box2d
- * 
+ * @author Sean
+ * @version 1.0
  */
-
 package com.mygdx.game;
 
 import java.util.ArrayList;
@@ -29,7 +29,7 @@ import com.badlogic.gdx.utils.Array;
 
 public class GameEngine extends ApplicationAdapter {
 	
-	public static final int SCALE = 6;
+	public static final int SCALE = 30;
 	public static int windowHeight;
 	public static int windowWidth;
 	public static int playerRadius = 1; // in units of meters
@@ -121,9 +121,8 @@ public class GameEngine extends ApplicationAdapter {
 	private void manageBodies() {
 		deletableProjectiles = player.manageProjectiles(Gdx.graphics.getDeltaTime());
 		world.getBodies(bodies);
-		
 		for (Body b : bodies) {
-			sr.circle(b.getPosition().x, b.getPosition().y, projectileRadius); // update visually
+			sr.circle(b.getPosition().x, b.getPosition().y, projectileRadius);
 			if (!deletableProjectiles.isEmpty()) {
 				for (int i = 0; i < deletableProjectiles.size(); i++) {
 					if (b.equals(deletableProjectiles.get(i))) {
@@ -200,7 +199,8 @@ public class GameEngine extends ApplicationAdapter {
 	}
 	
 	private void checkResized() {
-		if (Gdx.graphics.getWidth() != windowWidth || Gdx.graphics.getHeight() != windowHeight) {
+		if (Gdx.graphics.getWidth() != windowWidth 
+				|| Gdx.graphics.getHeight() != windowHeight) {
 			windowWidth = Gdx.graphics.getWidth();
 			windowHeight = Gdx.graphics.getHeight();
 			resize(windowWidth, windowHeight);

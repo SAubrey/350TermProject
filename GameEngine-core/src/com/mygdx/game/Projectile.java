@@ -63,7 +63,8 @@ public class Projectile {
 		vel = new Vector2();
 		float dX, dY, slope;
 		dX = mouseX - playerX;
-		//System.out.println("(vpH: " + viewportHeight + " - mouseY: " + mouseY + ") - pY: " + playerY);
+		//System.out.println("(vpH: " + viewportHeight + " - mouseY: " + mouseY + ")
+		//- pY: " + playerY);
 		dY = (viewportHeight - mouseY) - playerY;
 		slope = Math.abs(dX / dY);
 		if (dX > 0) {
@@ -86,7 +87,8 @@ public class Projectile {
 			}
 		}
 		//Used for debug
-		//System.out.println(" pX: " + playerX + " dX: " + dX + " pY: " + playerY +  " dY: " + dY + " slope: " +
+		//System.out.println(" pX: " + playerX + " dX: " 
+		//+ dX + " pY: " + playerY +  " dY: " + dY + " slope: " +
 		//slope + " xVel: " + vel.x + " yVel: " + vel.y);
 		solidBody.setLinearVelocity(vel);
 	}
