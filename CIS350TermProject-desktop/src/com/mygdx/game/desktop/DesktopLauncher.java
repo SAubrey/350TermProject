@@ -4,6 +4,7 @@ import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.mygdx.game.GameEngine;
+import com.mygdx.game.ScreenManager;
 
 /**
  * DesktopLauncher class is one of many platforms provided by
@@ -25,7 +26,8 @@ public class DesktopLauncher {
 		config.setFromDisplayMode(displayMode);
 		config.title = "It's party time";
 		//config.fullscreen = false;
-		new LwjglApplication(new GameEngine(), config);
+		//new LwjglApplication(new GameEngine(), config);
+		new LwjglApplication(new ScreenManager(), config);
 		GameEngine.setWinHeight(displayMode.height);
 		GameEngine.setWinWidth(displayMode.width);
 	}

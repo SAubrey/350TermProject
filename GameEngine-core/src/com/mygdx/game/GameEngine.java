@@ -1,20 +1,27 @@
 package com.mygdx.game;
 
-import java.util.ArrayList;
 import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.TimeUtils;
 
 /**
  * GameEngine class is the core class that updates the game state 
@@ -24,7 +31,7 @@ import com.badlogic.gdx.utils.Array;
  * 
  * @author Sean Aubrey, Gabriel Fountain, Brandon Conn
  */
-public class GameEngine extends ApplicationAdapter {
+public class GameEngine implements Screen {
 	
 	/** Window to viewport dimension ratio. */
 	public static final int SCALE = 6;
@@ -35,23 +42,30 @@ public class GameEngine extends ApplicationAdapter {
 	/**  X value in pixels.*/
 	private static int windowWidth;
 	
+	/** camera view height.*/
+	private static int viewportHeight;
+	
+	/** camera view width.*/
+	private static int viewportWidth;
+	
 	/**  Circular player size in meters.*/
-	private static float playerRadius = 1;
+	private static float playerRadius = 1f;
 	
 	/**  Circular projectile size in meters.*/
-	private static float projectileRadius = 0.5f;
+	private static float projectileRadius = 0.7f;
+	
+	private static float swarmerRadius = 0.8f;
+	
+	private static float spitterRadius = 2f;
+	
+	private static float demonRadius = 10f;
+	
+	private GameState state = GameState.RUN;
+	
+	private boolean flashRed;
 	
 	/**  Box2D physical object management plane.*/
 	private static World world;
-	
-	/**  Time between shots in seconds.*/
-	private final float shotTime = 0.2f;
-	
-	/**  Applied acceleration upon movement in m/s^2.*/
-	private final float playerAcceleration = 15.0f;
-	
-	/**  Collects visual elements to be updated together.*/
-	private SpriteBatch batch;
 	
 	/**  A camera with an orthographic projection. */
 	private OrthographicCamera camera;
@@ -71,14 +85,16 @@ public class GameEngine extends ApplicationAdapter {
 	/**  Characteristics of X wall.*/
 	private BodyDef xWallDef;
 	
+	/**  Attaches a physical body to its qualities.*/
+	private Fixture fixture;
+	
 	/**  Player object.*/
-	private Player player;
+	public Player player;
+	
+	private Listener listener;
 	
 	/**  All bodies detected in the world.*/
 	private Array<Body> bodies;
-	
-	/**  Projectile bodies to be deleted.*/
-	private ArrayList<Body> deletableProjectiles;
 	
 	/**  X position of the Player.*/
 	private float x;
@@ -89,16 +105,44 @@ public class GameEngine extends ApplicationAdapter {
 	/**  Time counter before a shot is fired.*/
 	private float shotAccumulator;
 	
+	/**  Time counter before shotgun is fired.*/
+	private float shotgunAccumulator;
+	
+	private EnemyManager eMan;
+	
+	private Texture healthBar;
+	
+	//private Texture vignette;
+	
+	private Texture background;
+	
+	Sound song;
+	
+	Sound shot;
+	
+	private float playerHealth = 100;
+	
+	final ScreenManager sM;
+	
 	/**
 	 * Called once at creation to set up initial graphical objects 
 	 * and create constant physical objects.
 	 */
-	@Override
-	public void create() {
-		batch = new SpriteBatch();
+	public GameEngine(final ScreenManager screenManager) {
+		this.sM = screenManager;
+		//batch = new SpriteBatch();
 		sr = new ShapeRenderer();
+		//font = new BitmapFont();
 
 		world = new World(new Vector2(0, 0), true);
+		viewportHeight = (int) scale(windowHeight);
+		viewportWidth = (int) scale(windowWidth);
+		healthBar = new Texture("blank.png");
+		//vignette = new Texture("vignette.png");
+		background = new Texture("3dgrid.jpg");
+		song = Gdx.audio.newSound(Gdx.files.internal("andreonate.mp3"));
+		song.setLooping(song.play(), true);
+		shot = Gdx.audio.newSound(Gdx.files.internal("kick.wav"));
 		
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, scale(windowWidth), scale(windowHeight));
@@ -106,7 +150,9 @@ public class GameEngine extends ApplicationAdapter {
 		camera.update();
 		
 		player = new Player();
-		deletableProjectiles = new ArrayList<Body>();
+		eMan = new EnemyManager(getViewWidth(), getViewHeight(), player);
+		listener =  new Listener(this);
+		world.setContactListener(listener);
 		bodies = new Array<Body>();
 		createBorders();
 	}
@@ -119,35 +165,73 @@ public class GameEngine extends ApplicationAdapter {
 	 * Performs a physics step of the world.
 	 */
 	@Override
-	public void render() {
+	public void render(float delta) {
+		switch (state) {
+		case RUN:
+			checkResized();
+			x = player.getX();
+			y = player.getY();
+			player.setPos();
+			eMan.update(x, y, getDeltaTime());
+
+			checkMovement();
+			checkClick();
+			updateGraphics();
+			camera.update();
+
+			//long javaHeap = Gdx.app.getJavaHeap();
+			//System.out.println("javaH: " + javaHeap);
+			world.step(1 / 60f, 6, 2);
+			break;
+		case PAUSE:
+			sM.setScreen(new PauseScreen(sM, this));
+			break;
+		case DEAD:
+			sM.setScreen(new DeathScreen(sM, this));
+			break;
+		}
+	}
+	
+	public static float getDeltaTime() {
+		return Gdx.graphics.getDeltaTime();
+	}
+	
+	private void updateGraphics() {
 		Gdx.gl.glClearColor(0, 0, 0, 0);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		if (flashRed) {
+			Gdx.gl.glClearColor(0.3f, 0, 0, 1f);
+			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+			flashRed = false;
+		}
 		
-		checkResized();
-		x = player.getX();
-		y = player.getY();
-		player.setPos();
-		
+		playerHealth = player.getHealth();
+		float hRatio = playerHealth/100;
 		// Render images between begin and end. 
 		sr.setProjectionMatrix(camera.combined);
 		sr.begin(ShapeType.Filled);
+		sr.setColor(1, 1 * hRatio, 1 * hRatio, 1); // white to red fade
 		sr.setColor(1, 1, 1, 1);
 		sr.circle(x, y, playerRadius);
 		manageBodies();
 		sr.end();
+		eMan.update(x,y, getDeltaTime());
 		
 		// Render images between batch.begin and batch.end. 
-		batch.begin();
-		batch.setProjectionMatrix(camera.combined);
-		batch.end();
 		
-		checkMovement();
-		
-		player.velocityCap();
-		checkClick();
-		
-		camera.update();
-		world.step(1 / 60f, 6, 2);
+		sM.batch.begin();
+		sM.batch.setProjectionMatrix(camera.combined);
+		sM.batch.setColor(1,1,1,.2f);
+		sM.batch.draw(background, 0, 0, viewportWidth, viewportHeight);
+		//sM.batch.setColor(1,1,1,.5f);
+		//sM.batch.draw(vignette, 0, 0, viewportWidth, viewportHeight);
+		sM.batch.setColor(1, 1 * hRatio, 1 * hRatio, .8f);
+		sM.batch.draw(healthBar, 0, 0, viewportWidth * hRatio, 0.5f);
+		sM.batch.end();
+	}
+	
+	public void flashRed() {
+		flashRed = true;
 	}
 	
 	/**
@@ -157,12 +241,26 @@ public class GameEngine extends ApplicationAdapter {
 	 */
 	private void checkClick() {
 		shotAccumulator += Gdx.graphics.getDeltaTime();
-		if (shotAccumulator >= shotTime) {
+		shotgunAccumulator += Gdx.graphics.getDeltaTime();
+		if (shotAccumulator >= player.getShotTime()) {
 			if (Gdx.input.isTouched()) {
-			player.fireProjectile(Gdx.input.getX(),
-					Gdx.input.getY());
+			player.fireProjectile(scale(Gdx.input.getX()),
+					scale(Gdx.input.getY()));
+			shot.play(0.3f); // volume
 			shotAccumulator = 0;
 			}
+		}
+		if (shotgunAccumulator >= player.getShotgunTime()) {
+			if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
+			player.fireShotgun(scale(Gdx.input.getX()),
+					scale(Gdx.input.getY()));
+			shot.play(0.5f); // volume
+			shotAccumulator = -1;
+			shotgunAccumulator = 0;
+			}
+		}
+		if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
+			pause();
 		}
 	}
 	
@@ -171,18 +269,37 @@ public class GameEngine extends ApplicationAdapter {
 	 * those that match. Also updates each body's graphical position.
 	 */
 	private void manageBodies() {
-		deletableProjectiles = player.manageProjectiles(Gdx.graphics.getDeltaTime());
+		player.manageProjectiles(getDeltaTime());
 		world.getBodies(bodies);
 		for (Body b : bodies) {
-			sr.circle(b.getPosition().x, b.getPosition().y, projectileRadius);
-			if (!deletableProjectiles.isEmpty()) {
-				for (int i = 0; i < deletableProjectiles.size(); i++) {
-					if (b.equals(deletableProjectiles.get(i))) {
-						world.destroyBody(b);
-						b.setUserData(null);
-						b = null;
-					}
+			
+			if (b.getUserData().equals("player")) {
+				if (player.getHealth() <= 0) {
+					dead();
 				}
+			}
+			if (b.getUserData().equals("playerProj")) {
+				sr.setColor(.95f, .95f, .95f, 1);
+				sr.circle(b.getPosition().x, b.getPosition().y, projectileRadius);
+			}
+			if (b.getUserData().equals("enemyProj")) {
+				sr.setColor(1f, .75f, .75f, 1);
+				sr.circle(b.getPosition().x, b.getPosition().y, projectileRadius);
+			}
+			if (b.getUserData().equals("swarmer")) {
+				sr.setColor(1f, .4f, .4f, 1);
+				sr.circle(b.getPosition().x, b.getPosition().y, swarmerRadius);
+			}
+			if (b.getUserData().equals("spitter")) {
+				sr.setColor(1f, .2f, .2f, 1);
+				sr.circle(b.getPosition().x, b.getPosition().y, spitterRadius);
+			}
+			if (b.getUserData().equals("demon")) {
+				sr.setColor(1, 0, 0, 1);
+				sr.circle(b.getPosition().x, b.getPosition().y, demonRadius);
+			}
+			if (b.getUserData().equals("deletable")) {
+				world.destroyBody(b);
 			}
 		}
 	}
@@ -192,6 +309,7 @@ public class GameEngine extends ApplicationAdapter {
 	 * to be moved to Player. Also lets Player know if a key is not being 
 	 * pressed so that that direction's movement can be slowed.
 	 */
+	/*
 	private void checkMovement() {
 		if (Gdx.input.isKeyPressed(Input.Keys.A)) {
 			player.moveHorizontal(-playerAcceleration);
@@ -217,32 +335,22 @@ public class GameEngine extends ApplicationAdapter {
 			player.simulateResistance(4);
 		}
 	}
+	*/
 	
-	/* Attempted fix of movement bugs. Almost works. Pairs with player.move
 	private void checkMovement() {
-		//sends 4 booleans to Player?
 		boolean right = false, left = false, up = false, down = false;
 		if (Gdx.input.isKeyPressed(Input.Keys.A)) {
 			left = true;
-			if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-				up = true;
-			}
-			else if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-				down = true;
-			}
-		}
-		else if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+		} else if (Gdx.input.isKeyPressed(Input.Keys.D)) {
 			right = true;
-			if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-				up = true;
-			}
-			else if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-				down = true;
-			}
+		}
+		if (Gdx.input.isKeyPressed(Input.Keys.W)) {
+			up = true;
+		} else if (Gdx.input.isKeyPressed(Input.Keys.S)) {
+			down = true;
 		}
 		player.move(right, left, up, down);
 	}
-	*/
 	
 	/**
 	 * Scales pixel dimensions to the camera's viewport size so that physical
@@ -254,7 +362,7 @@ public class GameEngine extends ApplicationAdapter {
 	 * @param val window dimension
 	 * @return viewport dimension
 	 */
-	private float scale(final float val) {
+	public static float scale(final float val) {
 		return val / SCALE;
 	}
 	
@@ -289,37 +397,46 @@ public class GameEngine extends ApplicationAdapter {
 	private void createBorders() {
 		// Floor
 		xWallDef = new BodyDef();
+		
 		xWallDef.position.set(0, 0);
 		
 		xWall = world.createBody(xWallDef);
+		xWall.setUserData("wall");
 		
 		xWallBox = new PolygonShape();
 		xWallBox.setAsBox(camera.viewportWidth, 0.0f);
-		xWall.createFixture(xWallBox, 0.0f);
+		fixture = xWall.createFixture(xWallBox, 0.0f);
+		fixture.setUserData(this);
 		
 		// Ceiling
 		xWallDef.position.set(0, camera.viewportHeight);
 		xWall = world.createBody(xWallDef);
+		xWall.setUserData("wall");
 		xWallBox.setAsBox(camera.viewportWidth, 0.0f);
-		xWall.createFixture(xWallBox, 0.0f);
+		fixture = xWall.createFixture(xWallBox, 0.0f);
+		fixture.setUserData(this);
 		
 		// Wall 1
 		wallDef = new BodyDef();
 		wallDef.position.set(0, 0);
 		
 		wall = world.createBody(wallDef);
+		wall.setUserData("wall");
 		
 		wallBox = new PolygonShape();
 		wallBox.setAsBox(0, camera.viewportHeight);
-		wall.createFixture(wallBox, 0.0f);
+		fixture = wall.createFixture(wallBox, 0.0f);
+		fixture.setUserData(this);
 		
 		// Wall 2
 		wallDef.position.set(camera.viewportWidth, 0);
 		wall = world.createBody(wallDef);
+		wall.setUserData("wall");
 		wallBox.setAsBox(0, camera.viewportHeight);
-		wall.createFixture(wallBox, 0.0f);
+		fixture = wall.createFixture(wallBox, 0.0f);
+		fixture.setUserData(this);
 	}
-	/*
+	
 	public class FPSLogger {
 		long startTime;
 
@@ -337,7 +454,11 @@ public class GameEngine extends ApplicationAdapter {
 			}
 		}
 	}
-	*/
+	
+	
+	public void incrementKillCount() {
+		player.incrementKillCount();
+	}
 	
 	/**
 	 * Returns the world instance.
@@ -361,6 +482,30 @@ public class GameEngine extends ApplicationAdapter {
 	 */
 	public static float getPlayRadius() {
 		return playerRadius;
+	}
+	
+	/**
+	 * Returns the size of a Swarmer's radius.
+	 * @return player radius.
+	 */
+	public static float getSwarmRadius() {
+		return swarmerRadius;
+	}
+	
+	/**
+	 * Returns the size of a Spitter's radius.
+	 * @return player radius.
+	 */
+	public static float getSpitterRadius() {
+		return spitterRadius;
+	}
+	
+	/**
+	 * Returns the size of a Demon's radius.
+	 * @return player radius.
+	 */
+	public static float getDemonRadius() {
+		return demonRadius;
 	}
 	
 	/**
@@ -396,14 +541,54 @@ public class GameEngine extends ApplicationAdapter {
 	}
 	
 	/**
+	 * Returns the window's height in meters.
+	 * @return window height.
+	 */
+	public static int getViewHeight() {
+		return viewportHeight;
+	}
+	
+	/**
+	 * Returns the window's width in meters.
+	 * @return window height.
+	 */
+	public static int getViewWidth() {
+		return viewportWidth;
+	}
+	
+	/**
 	 * Certain assets should be disposed of manually before exiting the application.
 	 */
 	@Override
 	public void dispose() {
-		batch.dispose();
 		sr.dispose();
+		world.dispose();
+		eMan = null;
+		//player = null;
 		xWallBox.dispose();
 		wallBox.dispose();
+	}
+	
+	@Override
+	public void pause() {
+		state = GameState.PAUSE;
+	}
+
+	@Override
+	public void show() {
+	}
+
+	@Override
+	public void resume() {
+		state = GameState.RUN;
+	}
+	
+	public void dead() {
+		state = GameState.DEAD;
+	}
+
+	@Override
+	public void hide() {
 	}
 }
 	

@@ -20,66 +20,68 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
  */
 public class Projectile {
 	
-	/**  Window to viewport dimension ratio.*/
-	private final int scale = GameEngine.SCALE;
-	
 	/**  Interval in seconds before Projectile triggers despawn.*/
-	private final float despawnTime = 3.0f;
-	
-	/**  Y value in pixels.*/
-	private int windowHeight = GameEngine.getWinHeight();
+	public final float despawnTime = 2.0f;
 	
 	/** Scaled Y value of the window. */
-	private float viewportHeight = scale(windowHeight);
+	public int viewportHeight;
 	
 	/**  Velocity limit.*/
-	private float maxVelocity = 70;
+	public int maxVelocity;
+	
+	public float damage;
     
 	/**  Size of physical body.*/
-	private float size = GameEngine.getProjRadius();
+	public float size;
     
-	/**  Player's X position.*/
-	private float playerX;
+	/**  Projectile source's X position.*/
+	public float sourceX;
     
-	/**  Player's Y position.*/
-	private float playerY;
-	
-	/**  Cursor click X position.*/
-	private float mouseX;
-	
-	/**  Cursor click Y position.*/
-	private float mouseY;
+	/**  Projectile source's Y position.*/
+	public float sourceY;
 	
 	/**  Accumulates time between frames. */
-	private float accumulator;
+	public float accumulator;
+	
+	public float targetX;
+	
+	public float targetY;
+	
+	public float dX;
+	
+	public float dY;
+	
+	public float slope;
+	
+	public float displacement;
 	
 	/**  X and Y velocity.*/
-	private Vector2 vel;
+	public Vector2 vel;
 	
 	/**  Temporary position vector.*/
-	private Vector2 vec;
+	public Vector2 vec;
 	
 	/**  X and Y values for where Projectiles spawns relative to Player.*/
-	private Vector2 quad;
+	public Vector2 quad;
 	
 	/**  Circle shape.*/
-	private Circle body;
+	public Circle body;
 	
 	/**  Characteristics of physical body.*/
-	private BodyDef bodyDef;
+	public BodyDef bodyDef;
 	
 	/**  Physical body.*/
-	private Body solidBody;
+	public Body solidBody;
 	
 	/**  Box2D circle shape.*/
-	private CircleShape circle;
+	public CircleShape circle;
 	
 	/**  Characteristics of fixture.*/
-	private FixtureDef fixtureDef;
+	public FixtureDef fixtureDef;
 	
 	/**  Attaches a physical body to its qualities.*/
 	@SuppressWarnings("unused")
-	private Fixture fixture;
+	public Fixture fixture;
 	
 	/**
 	 * Constructor that assigns passed values locally that will be used
@@ -89,19 +91,25 @@ public class Projectile {
 	 * @param mouseX cursor's X coordinate in pixels.
 	 * @param mouseY cursor's Y coordinate in pixels.
 	 */
-	public Projectile(final float playerX, final float playerY,
-			final float mouseX, final float mouseY) {
-		this.mouseX = scale(mouseX);
-		this.mouseY = scale(mouseY);
-		this.playerX = playerX;
-		this.playerY = playerY;
-		
+	public Projectile(final float sourceX, final float sourceY,
+			final float targetX, final float targetY, float bulletDamage) {
+		this.targetX = targetX;
+		this.targetY = targetY;
+		this.sourceX = sourceX;
+		this.sourceY = sourceY;
+		damage = bulletDamage;
+		dX = targetX - sourceX;
+		dY = targetY - sourceY;
+		viewportHeight = GameEngine.getViewHeight();
+		size = GameEngine.getProjRadius();
+		/*
 		body = new Circle();
 		bodyDef = new BodyDef();
 		bodyDef.type = BodyType.DynamicBody;
 		vec = new Vector2(determineQuadrant());
-		bodyDef.position.set(playerX + vec.x, playerY + vec.y);
-		solidBody = GameEngine.getWorld().createBody(bodyDef);
+		bodyDef.position.set(sourceX + vec.x, sourceY + vec.y);
+		solidBody = GameEngine.getWorld().createBody(bodyDef);// problem here???
+		solidBody.setUserData("");
 		circle = new CircleShape();
 		circle.setRadius(size);
 		
@@ -111,8 +119,10 @@ public class Projectile {
 		fixtureDef.friction = 0.4f;
 		fixtureDef.restitution = 0.8f; // bounciness
 		fixture = solidBody.createFixture(fixtureDef);
-		
+		fixture.setUserData(this);
+
 		calculateVelocity();
+		*/
 	}
 
 	/**
@@ -122,20 +132,14 @@ public class Projectile {
 	 * Formula to determine X + Y velocities: BF(n) = B(n/(n+1)) + B(1/(n+1)),
 	 * where n is X/Y slope and B is max velocity.
 	 */
-	private void calculateVelocity() {
+	public void calculateVelocity() {
 		vel = new Vector2();
-		float dX, dY, slope;
-		dX = mouseX - playerX;
-		//System.out.println("(vpH: " + viewportHeight + " - mouseY: " + mouseY + ")
-		//- pY: " + playerY);
-		dY = (viewportHeight - mouseY) - playerY;
 		slope = Math.abs(dX / dY);
 		if (dX > 0) {
 			if (dY >= 0) {
 				vel.x = maxVelocity * (slope / (slope + 1));
 				vel.y = maxVelocity * (1 / (slope + 1));
-			}
-			if (dY < 0) {
+			} else if (dY < 0) {
 				vel.x = maxVelocity * (slope / (slope + 1));
 				vel.y = -maxVelocity * (1 / (slope + 1));
 			}
@@ -143,16 +147,17 @@ public class Projectile {
 			if (dY >= 0) {
 				vel.x = -maxVelocity * (slope / (slope + 1));
 				vel.y = maxVelocity * (1 / (slope + 1));
-			}
-			if (dY < 0) {
+			} else if (dY < 0) {
 				vel.x = -maxVelocity * (slope / (slope + 1));
 				vel.y = -maxVelocity * (1 / (slope + 1));
 			}
 		}
 		//Used for debug
-		//System.out.println(" pX: " + playerX + " dX: " 
-		//+ dX + " pY: " + playerY +  " dY: " + dY + " slope: " +
-		//slope + " xVel: " + vel.x + " yVel: " + vel.y);
+		/*
+		System.out.println(" pX: " + playerX + " dX: " 
+		+ dX + " pY: " + playerY +  " dY: " + dY + " slope: " +
+		slope + " xVel: " + vel.x + " yVel: " + vel.y);
+		*/
 		solidBody.setLinearVelocity(vel);
 	}
 	
@@ -161,18 +166,9 @@ public class Projectile {
 	 * intersecting with the player.
 	 * @return vector signifying quadrant of player.
 	 */
-	private Vector2 determineQuadrant() {
-		
-		/**  */
-		float dX = mouseX - playerX;
-		
-		/**  */
-		float dY = (viewportHeight - mouseY) - playerY;
-		
-		/**  */
-		float displacement = 0.05f;
+	public Vector2 determineQuadrant() {
+		displacement = 0.1f;
 		quad = new Vector2();
-		
 		if (dX > 0) {
 			if (dY > 0) {
 				quad.x = displacement;
@@ -197,43 +193,49 @@ public class Projectile {
 	 * Applies acceleration against the velocity of the projectile
 	 * to slow it down. 
 	 */
+	/*
 	public void simulateResistance() {
-		
-		/**  Current X velocity.*/
 		float xVelocity = solidBody.getLinearVelocity().x;
-		
-		/**  Current Y velocity.*/
 		float yVelocity = solidBody.getLinearVelocity().y;
+		float resistance = 3f;
 		
 		if (xVelocity < 0)  {
-			solidBody.applyForceToCenter(0.3f, 0, true);
+			solidBody.applyForceToCenter(resistance, 0, true);
 		} else if (xVelocity > 0) {
-			solidBody.applyForceToCenter(-0.3f, 0, true);
+			solidBody.applyForceToCenter(-resistance, 0, true);
 		} 
 		
 		if (yVelocity > 0) {
-			solidBody.applyForceToCenter(0, -0.3f, true);
+			solidBody.applyForceToCenter(0, -resistance, true);
 		} else if (yVelocity < 0)  {
-			solidBody.applyForceToCenter(0, 0.3f, true);
+			solidBody.applyForceToCenter(0, resistance, true);
 		}
-	}
+	}*/
 	
 	/**
 	 * Sets graphical object's position to a physical body's position.
 	 */
 	public void setPos() {
-		solidBody.setUserData(body);
 		body.setPosition(solidBody.getPosition());
 	}
 	
 	/**
 	 * Accumulates time until the despawn time is reached.
-	 * @param time difference in time between frames.
-	 * @return true if projectile is deletable.
+	 * @param time difference between frames.
 	 */
 	public boolean deletable(final float time) {
 		accumulator += time;
-		return (accumulator >= despawnTime);
+		
+		if (accumulator >= despawnTime) {
+			//GameEngine.getWorld().destroyBody(solidBody);
+			solidBody.setUserData("deletable");
+			return true;
+		}
+		return false;
+	}
+	
+	public void setDeletable() {
+		accumulator = despawnTime;
 	}
 	
 	/**
@@ -244,18 +246,8 @@ public class Projectile {
 		return solidBody;
 	}
 	
-	/**
-	 * Scales pixel dimensions to the camera's viewport size so that physical
-	 * object dimensions can be declared in units of meters to function 
-	 * correctly within Box2D. In other words,
-	 * rather than scaling the objects to 
-	 * the window size, we scale the window size to the object.
-	 * 
-	 * @param val window dimension
-	 * @return viewport dimension
-	 */
-	public float scale(final float val) {
-		return val / scale;
+	public float getBulletDamage() {
+		return damage;
 	}
 }
 
