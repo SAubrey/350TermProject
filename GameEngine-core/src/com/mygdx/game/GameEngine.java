@@ -1,16 +1,12 @@
 package com.mygdx.game;
 
-import com.badlogic.gdx.ApplicationAdapter;
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -21,7 +17,6 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.TimeUtils;
 
 /**
  * GameEngine class is the core class that updates the game state 
@@ -31,7 +26,7 @@ import com.badlogic.gdx.utils.TimeUtils;
  * 
  * @author Sean Aubrey, Gabriel Fountain, Brandon Conn
  */
-public class GameEngine implements Screen {
+public class GameEngine extends ScreenAdapter {
 	
 	/** Window to viewport dimension ratio. */
 	public static final int SCALE = 6;
@@ -89,7 +84,7 @@ public class GameEngine implements Screen {
 	private Fixture fixture;
 	
 	/**  Player object.*/
-	public Player player;
+	private Player player;
 	
 	private Listener listener;
 	
@@ -116,23 +111,24 @@ public class GameEngine implements Screen {
 	
 	private Texture background;
 	
-	Sound song;
+	private Sound song;
 	
-	Sound shot;
+	private Sound shot;
 	
 	private float playerHealth = 100;
 	
-	final ScreenManager sM;
+	private final ScreenManager sM;
+	
+	private SpriteBatch batch = new SpriteBatch();
 	
 	/**
 	 * Called once at creation to set up initial graphical objects 
 	 * and create constant physical objects.
+	 * @param screenManager Used to shift between screens
 	 */
 	public GameEngine(final ScreenManager screenManager) {
 		this.sM = screenManager;
-		//batch = new SpriteBatch();
 		sr = new ShapeRenderer();
-		//font = new BitmapFont();
 
 		world = new World(new Vector2(0, 0), true);
 		viewportHeight = (int) scale(windowHeight);
@@ -165,7 +161,7 @@ public class GameEngine implements Screen {
 	 * Performs a physics step of the world.
 	 */
 	@Override
-	public void render(float delta) {
+	public void render(final float delta) {
 		switch (state) {
 		case RUN:
 			checkResized();
@@ -179,8 +175,6 @@ public class GameEngine implements Screen {
 			updateGraphics();
 			camera.update();
 
-			//long javaHeap = Gdx.app.getJavaHeap();
-			//System.out.println("javaH: " + javaHeap);
 			world.step(1 / 60f, 6, 2);
 			break;
 		case PAUSE:
@@ -206,7 +200,7 @@ public class GameEngine implements Screen {
 		}
 		
 		playerHealth = player.getHealth();
-		float hRatio = playerHealth/100;
+		float hRatio = playerHealth / 100;
 		// Render images between begin and end. 
 		sr.setProjectionMatrix(camera.combined);
 		sr.begin(ShapeType.Filled);
@@ -215,19 +209,17 @@ public class GameEngine implements Screen {
 		sr.circle(x, y, playerRadius);
 		manageBodies();
 		sr.end();
-		eMan.update(x,y, getDeltaTime());
+		eMan.update(x, y, getDeltaTime());
 		
 		// Render images between batch.begin and batch.end. 
 		
-		sM.batch.begin();
-		sM.batch.setProjectionMatrix(camera.combined);
-		sM.batch.setColor(1,1,1,.2f);
-		sM.batch.draw(background, 0, 0, viewportWidth, viewportHeight);
-		//sM.batch.setColor(1,1,1,.5f);
-		//sM.batch.draw(vignette, 0, 0, viewportWidth, viewportHeight);
-		sM.batch.setColor(1, 1 * hRatio, 1 * hRatio, .8f);
-		sM.batch.draw(healthBar, 0, 0, viewportWidth * hRatio, 0.5f);
-		sM.batch.end();
+		batch.begin();
+		batch.setProjectionMatrix(camera.combined);
+		batch.setColor(1, 1, 1, .2f);
+		batch.draw(background, 0, 0, viewportWidth, viewportHeight);
+		batch.setColor(1, 1 * hRatio, 1 * hRatio, .8f);
+		batch.draw(healthBar, 0, 0, viewportWidth * hRatio, 0.5f);
+		batch.end();
 	}
 	
 	public void flashRed() {
@@ -303,39 +295,6 @@ public class GameEngine implements Screen {
 			}
 		}
 	}
-	
-	/**
-	 * Checks the source of user input and sends which direction
-	 * to be moved to Player. Also lets Player know if a key is not being 
-	 * pressed so that that direction's movement can be slowed.
-	 */
-	/*
-	private void checkMovement() {
-		if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-			player.moveHorizontal(-playerAcceleration);
-		} else if (!Gdx.input.isKeyPressed(Input.Keys.A)) {
-			player.simulateResistance(1);
-		}
-		
-		if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-			player.moveHorizontal(playerAcceleration);
-		} else if (!Gdx.input.isKeyPressed(Input.Keys.D)) {
-			player.simulateResistance(2);
-		}
-		
-		if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-			player.moveVertical(playerAcceleration);
-		} else if (!Gdx.input.isKeyPressed(Input.Keys.W)) {
-			player.simulateResistance(3);
-		}
-		
-		if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-			player.moveVertical(-playerAcceleration);
-		} else if (!Gdx.input.isKeyPressed(Input.Keys.S)) {
-			player.simulateResistance(4);
-		}
-	}
-	*/
 	
 	private void checkMovement() {
 		boolean right = false, left = false, up = false, down = false;
@@ -437,25 +396,6 @@ public class GameEngine implements Screen {
 		fixture.setUserData(this);
 	}
 	
-	public class FPSLogger {
-		long startTime;
-
-		public FPSLogger() {
-			startTime = TimeUtils.nanoTime();
-		}
-
-		// Logs the current frames per second to the console
-		// 1,000,000,000ns == one second 
-		public void log() {
-			if (TimeUtils.nanoTime() - startTime > 1000000000)  {
-				Gdx.app.log("FPSLogger", "fps: " 
-					+ Gdx.graphics.getFramesPerSecond());
-				startTime = TimeUtils.nanoTime();
-			}
-		}
-	}
-	
-	
 	public void incrementKillCount() {
 		player.incrementKillCount();
 	}
@@ -466,6 +406,14 @@ public class GameEngine implements Screen {
 	 */
 	public static World getWorld() {
 		return world;
+	}
+	
+	/**
+	 * Returns the player instance.
+	 * @return world.
+	 */
+	public Player getPlayer() {
+		return player;
 	}
 	
 	/**
@@ -575,20 +523,12 @@ public class GameEngine implements Screen {
 	}
 
 	@Override
-	public void show() {
-	}
-
-	@Override
 	public void resume() {
 		state = GameState.RUN;
 	}
 	
 	public void dead() {
 		state = GameState.DEAD;
-	}
-
-	@Override
-	public void hide() {
 	}
 }
 	

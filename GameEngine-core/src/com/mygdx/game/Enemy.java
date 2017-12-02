@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
@@ -18,70 +19,93 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 public class Enemy {
 	
 	/**  Velocity limit.*/
-	public float maxVelocity;
+	private float maxVelocity;
 	
 	/** Circle shape. */
-	public Circle body;
+	private Circle body;
 	
 	/** Characteristics of physical body.*/
-	public BodyDef bodyDef;
+	private BodyDef bodyDef;
 	
 	/** Physical body. */
-	public Body solidBody;
+	private Body solidBody;
 	
 	/** Box2D circle shape. */
-	public CircleShape circle;
+	private CircleShape circle;
 	
 	/** Characteristics of fixture. */
-	public FixtureDef fixtureDef;
+	private FixtureDef fixtureDef;
 	
 	/** Attaches a physical body to its qualities. */
-	@SuppressWarnings("unused")
-	public Fixture fixture;
+	private Fixture fixture;
 	
-	public Vector2 position;
-	
-	public Vector2 vel;
+	/** */
+	private Vector2 position;
 	
 	/** All projectiles fired from Enemy. */
-	public ArrayList<EnemyProjectile> projectiles;
+	private ArrayList<EnemyProjectile> projectiles;
 	
 	/**  Player's X position.*/
-	public float playerX;
+	private float playerX;
     
 	/**  Player's Y position.*/
-	public float playerY;
+	private float playerY;
 	
-	public float health;
+	/** */
+	private float health;
 	
-	public float bodyDamage;
+	/** */
+	private float bodyDamage;
 	
-	public float accumulator;
+	/** */
+	private float accumulator;
 	
-	public Enemy(float spawnX, float spawnY) {
+	/** */
+	private int bulletDamage;
+	
+	/**
+	 * 
+	 * @param spawnX
+	 * @param spawnY
+	 */
+	public Enemy(final float spawnX, final float spawnY) {
 		position = new Vector2(spawnX, spawnY);
 		accumulator = 1.0f;
 		projectiles = new ArrayList<EnemyProjectile>();
-		/*
+	}
+	
+	/**
+	 * 
+	 * @param spawnX
+	 * @param spawnY
+	 * @param radius
+	 * @param density
+	 * @param restitution
+	 */
+	public void buildBody(final float spawnX, final float spawnY, final float radius,
+			final float density, final float restitution) {
 		body = new Circle();
 		bodyDef = new BodyDef();
 		bodyDef.type = BodyType.DynamicBody;
 		bodyDef.position.set(spawnX, spawnY); // determine spawn operation
 		solidBody = GameEngine.getWorld().createBody(bodyDef);
-		solidBody.setUserData("enemy");
 		circle = new CircleShape();
-		circle.setRadius(size);
+		circle.setRadius(radius);
 		
 		fixtureDef = new FixtureDef();
 		fixtureDef.shape = circle;
-		fixtureDef.density = 0.1f; 
+		fixtureDef.density = density;
 		fixtureDef.friction = 0.4f;
-		fixtureDef.restitution = 0.8f; // bounciness
+		fixtureDef.restitution = restitution; // bounciness
 		fixture = solidBody.createFixture(fixtureDef);
-		*/
 	}
 	
-	public void update(float x, float y) {
+	/**
+	 * 
+	 * @param x
+	 * @param y
+	 */
+	public void update(final float x, final float y) {
 		playerX = x;
 		playerY = y;
 		accumulator += GameEngine.getDeltaTime();
@@ -104,7 +128,7 @@ public class Enemy {
 			x = xBurst;
 			if (y > 0) {
 				y = -yBurst;
-			} else if (y <=0 ) {
+			} else if (y <= 0) {
 				y = yBurst;
 			}
 		}
@@ -113,7 +137,7 @@ public class Enemy {
 	
 	public void calculateVelocity() {
 		if (accumulator > 1.0f) {
-			vel = new Vector2();
+			Vector2 vel = new Vector2();
 			float dX, dY, slope;
 			dX = playerX - position.x;
 			dY = playerY - position.y;
@@ -141,7 +165,33 @@ public class Enemy {
 		}
 	}
 	
-	public boolean takeDamage(float damage) {
+	/**
+	 * Collects each projectile fired from the Demon that can be deleted.
+	 * @param time time between frames.
+	 */
+	public void manageProjectiles(final float time) {
+		if (!getProjectiles().isEmpty()) {
+			for (int i = 0; i < getProjectiles().size(); i++) {
+				if (getProjectiles().get(i).deletable(time)) { 
+					getProjectiles().remove(i);
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Creates a new Projectile object and gives it the Player's 
+	 * position and the cursor coordinates to which it will be directed.
+	 * @param playerX the horizontal pixel position.
+	 * @param playerY the vertical pixel position.
+	 */
+	public void spit(final float playerX, final float playerY) {
+		EnemyProjectile p = new EnemyProjectile(
+				getX(), getY(), playerX, playerY, bulletDamage);
+		getProjectiles().add(p);
+	}
+	
+	public boolean takeDamage(final float damage) {
 		health -= damage;
 		if (health <= 0) {
 			return true;
@@ -155,12 +205,19 @@ public class Enemy {
 	public void purgeProjectiles() {
 		for (EnemyProjectile x : projectiles) {
 			x.deletable(10);
-			// use this instead of transferring over array of projectiles to enemy manager with setDeletable()
 		}
+	}
+	
+	public void setHealth(final float health) {
+		this.health = health;
 	}
 	
 	public float getHealth() {
 		return health;
+	}
+	
+	public void multHealth(final float mult) {
+		health *= mult;
 	}
 	
 	public float getBodyDamage() {
@@ -173,11 +230,104 @@ public class Enemy {
 		return false;
 	}
 	
-	public void multMaxVelocity(float mult) {
+	public void multMaxVelocity(final float mult) {
 		maxVelocity *= mult;
 	}
 	
 	public ArrayList<EnemyProjectile> getProjectiles() {
 		return projectiles;
 	}
+	
+	/**
+	 * Returns physical body.
+	 * @return Enemy's physical body
+	 */
+	public Body getBody() {
+		return solidBody;
+	}
+	
+	public Circle getShapeBody() {
+		return body;
+	}
+	
+	/**
+	 * Returns body fixture.
+	 * @return Enemy's body fixture
+	 */
+	public Fixture getFixture() {
+		return fixture;
+	}
+	
+	public void setBodyDamage(final float damage) {
+		bodyDamage = damage;
+	}
+	
+	/**
+	 * Sets body's maximum velocity.
+	 * @param v velocity
+	 */
+	public void setMaxVelocity(final float v) {
+		maxVelocity = v;
+	}
+	
+	public void setPosition(final Vector2 pos) {
+		position = pos;
+	}
+	
+	public void incAccumulator(final float dt) {
+		accumulator += dt;
+	}
+	
+	public void setBulletDamage(final int d) {
+		bulletDamage = d;
+	}
+	
+	/**
+	 * Sets X position of the player.
+	 * @param x x coordinate
+	 */
+	public void setPlayerX(final float x) {
+		playerX = x;
+	}
+	
+	/**
+	 * Sets Y position of the player.
+	 * @param y y coordinate
+	 */
+	public void setPlayerY(final float y) {
+		playerY = y;
+	}
+	
+	/**
+	 * Returns X position of the player.
+	 * @return Player's x coordinate.
+	 */
+	public float getPlayerX() {
+		return playerX;
+	}
+	
+	/**
+	 * Returns Y position of the player.
+	 * @return Player's y coordinate.
+	 */
+	public float getPlayerY() {
+		return playerY;
+	}
+	
+	/**
+	 * Returns body's horizontal position.
+	 * @return physical body's X.
+	 */
+	public float getX() {
+		return getBody().getPosition().x;
+	}
+	
+	/**
+	 * Returns body's vertical position.
+	 * @return physical body's Y.
+	 */
+	public float getY() {
+		return getBody().getPosition().y;
+	}
+	
 }

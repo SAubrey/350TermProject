@@ -14,40 +14,100 @@ import com.badlogic.gdx.utils.Array;
  */
 public class EnemyManager {
 
+	/** Pre-instantiated player. */
 	private Player player;
+	
+	/** Pre-instantiated world. */
 	private World world;
+
+	/**  */
 	private Random rand;
+	
+	/**  */
 	private Swarmer swarmer;
+	
+	/**  */
 	private Spitter spitter;
+	
+	/**  */
 	private Demon demon;
+	
+	/**  */
 	private ArrayList<Enemy> enemies;
+	
+	/**  */
 	private Array<Body> bodies;
+	
+	/**  */
 	private int viewWidth;
+	
+	/**  */
 	private int viewHeight;
+	
+	/**  */
 	private float playerX;
+	
+	/**  */
 	private float playerY;
+	
+	/**  */
 	private int spawnX;
+	
+	/**  */
 	private int spawnY;
+	
+	/**  */
 	private float swarmerAccumulator;
+	
+	/**  */
 	private float spitterAccumulator;
+	
+	/**  */
 	private float demonAccumulator;
+	
+	/**  */
 	private float demonTime = 90; // half-seconds(roughly)
+	
+	/**  */
 	private float playerSum;
+	
+	/**  */
 	private float spawnSum;
-	private int killCount;
+	
+	/**  */
 	private boolean validSpawn;
+	
+	/**  */
 	private boolean spawned = false;
+	
+	/**  */
 	private boolean demonSpawned = false;;
+	
+	/**  */
 	private float time;
+	
+	/**  */
 	private float swarmerSpawnTime = 2.0f;
+	
+	/**  */
 	private float spitterSpawnTime = 10;
+	
+	/**  */
 	private float multiplier = 1;
+	
+	/**  */
 	private float demonsSlain;
 	
 	//if number of enemy kills is above a certain number, increase player shot rate
 	//after certain amount of time, increase enemy spawn rate/type
 	//every 10 seconds create a spawn packet so that enemies spawn  close together
-	public EnemyManager(int viewWidth, int viewHeight, Player player) {
+	/**
+	 * 
+	 * @param viewWidth viewport width
+	 * @param viewHeight viewport height
+	 * @param player instantiated player
+	 */
+	public EnemyManager(final int viewWidth, final int viewHeight, final Player player) {
 		this.viewWidth = viewWidth;
 		this.viewHeight = viewHeight;
 		this.player = player;
@@ -55,21 +115,16 @@ public class EnemyManager {
 		enemies = new ArrayList<Enemy>();
 		bodies = new Array<Body>();
 		rand = new Random();
-		//test
-		swarmer = new Swarmer(0,1); //320 x 180 view
-		System.out.println(viewWidth + " " + viewHeight);
-		enemies.add(swarmer);
 	}
 	/**
 	 * Updates timers and spawner methods. Clears enemies if their health is below 0.
-	 * @param playerX
-	 * @param playerY
-	 * @param deltaTime
+	 * @param playerX Player's x position
+	 * @param playerY Player's y position
+	 * @param deltaTime time between frames
 	 */
-	public void update(float playerX, float playerY, float deltaTime) {
+	public void update(final float playerX, final float playerY, final float deltaTime) {
 		this.playerX = playerX;
 		this.playerY = playerY;
-		killCount = player.getKillCount();
 		swarmerAccumulator += deltaTime;
 		spitterAccumulator += deltaTime;
 		if (!demonSpawned) {
@@ -80,13 +135,12 @@ public class EnemyManager {
 		spawn();
 		for (int i = 0; i < enemies.size(); i++) {
 			if (enemies.get(i).getHealth() <= 0) {
-				if (enemies.get(i).setDeletable()) {// only returns true for a dead demon
+				if (enemies.get(i).setDeletable()) { // only returns true for a dead demon
 					demonSpawned = false;
 					demonSlain();
 				}
 				enemies.remove(i);
-			}
-			else {
+			} else {
 				enemies.get(i).update(playerX, playerY);				
 			}
 		}
@@ -138,13 +192,13 @@ public class EnemyManager {
 	private void spawnSwarmerGroup() {
 		playerSum = playerX + playerY;
 		validSpawn = false;
-		while (validSpawn == false && demonSpawned == false) {
+		while (!validSpawn && !demonSpawned) {
 			spawnX = rand.nextInt(viewWidth - 50);
 			spawnX += 25;
 			spawnY = rand.nextInt(viewHeight - 50);
 			spawnY += 25;
 			spawnSum = spawnX + spawnY;
-			if (Math.abs(spawnSum - playerSum) > (viewWidth/2 - 25)) {
+			if (Math.abs(spawnSum - playerSum) > (viewWidth / 2 - 25)) {
 				validSpawn = true;
 				for (int i = 0; i < 3; i++) {
 					for (int j =  0; j < 6; j++) {
@@ -161,15 +215,17 @@ public class EnemyManager {
 		}
 	}
 
-	private boolean checkOverlap(int spawnX, int spawnY) {
+	/**
+	 * 
+	 * @param spawnX Proposed x spawn coordinate
+	 * @param spawnY Proposed y spawn coordinate
+	 * @return 
+	 */
+	private boolean checkOverlap(final int spawnX, final int spawnY) {
 		world.getBodies(bodies);
 		for (Body b : bodies) {
-			//if (spawnX == b.getPosition().x && spawnY == b.getPosition().y) {
-				//return true;
-			//}
 			if (spawnX > (b.getPosition().x - 1) && spawnX < (b.getPosition().x + 1) 
-					&& spawnY > (b.getPosition().y - 1) && spawnY < (b.getPosition().y + 1)) {
-				System.out.println("we got an OVERLAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP");
+				&& spawnY > (b.getPosition().y - 1) && spawnY < (b.getPosition().y + 1)) {
 				return true;
 			}
 		}
@@ -182,30 +238,23 @@ public class EnemyManager {
 		// adjust player's shoot speed
 		multiplier += 0.15f;
 		player.multMovement(multiplier);
-		if (demonsSlain >= 2) {
-			
-		}
 	}
 	
 	private void trackProgress() {
 		// only spawn once every 10 seconds, and not immediately
 		if (!demonSpawned) {
-			if ((int)time % 10 == 0 && spawned == false && time >= 10) {
+			if ((int) time % 10 == 0 && !spawned && time >= 10) {
 				//swarmerSpawnTime = 0.05f;
 				spawnSwarmerGroup();
 				spawned = true;
-			}
-			else if ((int)time % 10 == 1) {
+			} else if ((int) time % 10 == 1) {
 				//swarmerSpawnTime = 2.0f;
 				spawned =  false;
 			}
-			if ((int)time % 15 == 0) {
-			}
 		}
 
-		//if ((int)time % 45 == 0 && !demonSpawned && time >= 45) { //use demon spawn  accumulator?
 		if (demonAccumulator >= demonTime && !demonSpawned) {
-			demon = new Demon(GameEngine.getViewWidth()/2, GameEngine.getViewHeight()/2);
+			demon = new Demon(GameEngine.getViewWidth() / 2, GameEngine.getViewHeight() / 2);
 			demon.setMultiplier(multiplier);
 			enemies.add(demon);
 			demonSpawned = true;

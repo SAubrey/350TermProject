@@ -1,38 +1,29 @@
 package com.mygdx.game;
 
-import com.badlogic.gdx.math.Circle;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.CircleShape;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
-
+/**
+ * Subclass of Projectile. Fired from all enemies.
+ */
 public class EnemyProjectile extends Projectile {
+	
+	/**
+	 * Parent's constructor assigns passed values locally that will be used
+	 * to calculate trajectory. Creates graphical and physical body objects.
+	 * Children of Projectile must set their own velocity and user data for 
+	 * the body and its fixture, and also build the body and calculate velocity.
+	 * @param sourceX player's X coordinate in pixels.
+	 * @param sourceY player's Y coordinate in pixels.
+	 * @param targetX cursor's X coordinate in pixels.
+	 * @param targetY cursor's Y coordinate in pixels.
+	 * @param bulletDamage projectile's damage
+	 */
 	public EnemyProjectile(final float sourceX, final float sourceY,
-			final float targetX, final float targetY, float bulletDamage) {
+			final float targetX, final float targetY, final float bulletDamage) {
 		super(sourceX, sourceY, targetX, targetY, bulletDamage);
 		
-		maxVelocity = 170;
-		//damage = 15;
-		
-		body = new Circle();
-		bodyDef = new BodyDef();
-		bodyDef.type = BodyType.DynamicBody;
-		vec = new Vector2(determineQuadrant());
-		bodyDef.position.set(sourceX + vec.x, sourceY + vec.y);
-		solidBody = GameEngine.getWorld().createBody(bodyDef);
-		solidBody.setUserData("enemyProj");
-		circle = new CircleShape();
-		circle.setRadius(size);
-		
-		fixtureDef = new FixtureDef();
-		fixtureDef.shape = circle;
-		fixtureDef.density = 0.1f; 
-		fixtureDef.friction = 0.4f;
-		fixtureDef.restitution = 0.8f; // bounciness
-		fixture = solidBody.createFixture(fixtureDef);
-		fixture.setUserData(this);
-
+		setMaxVelocity(170);
+		buildBody(sourceX, sourceY);
+		getBody().setUserData("enemyProj");
+		getFixture().setUserData(this);
 		calculateVelocity();
 	}
 }

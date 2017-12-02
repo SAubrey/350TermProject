@@ -1,7 +1,6 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -13,7 +12,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -23,9 +21,9 @@ import com.badlogic.gdx.utils.Align;
 
 public class MainMenuScreen extends ScreenAdapter {
 
-	public SpriteBatch batch;
-	public BitmapFont font;
-	final ScreenManager sM;
+	private SpriteBatch batch;
+	private BitmapFont font;
+	private final ScreenManager sM;
 	private OrthographicCamera camera;
 	private Stage stage;
 	private Table table;
@@ -34,7 +32,6 @@ public class MainMenuScreen extends ScreenAdapter {
 	private TextButton play;
 	private TextButton quit;
 	
-
 	/**  Y value in pixels.*/
 	private int windowHeight;
 	
@@ -74,7 +71,7 @@ public class MainMenuScreen extends ScreenAdapter {
 		skin.add("default", style);
 		
 		play = new TextButton("Play", skin);
-		play.setPosition(windowWidth/2 - 50, windowHeight/2 - 50, Align.center);
+		play.setPosition(windowWidth / 2 - 50, windowHeight / 2 - 50, Align.center);
 		table.add(play).minSize(150, 65);
 		table.padBottom(-200);
 		table.row();
@@ -85,14 +82,14 @@ public class MainMenuScreen extends ScreenAdapter {
 	
 	private void addListeners() {
 		play.addListener(new ChangeListener() {
-			public void changed (ChangeEvent event, Actor play) {
+			public void changed(final ChangeEvent event, final Actor play) {
 				sM.setScreen(new GameEngine(sM));
 				dispose();
 			}
 		});
 		
 		quit.addListener(new ChangeListener() {
-			public void changed (ChangeEvent event, Actor quit) {
+			public void changed(final ChangeEvent event, final Actor quit) {
 				dispose();
 				Gdx.app.exit();
 			}
@@ -100,7 +97,7 @@ public class MainMenuScreen extends ScreenAdapter {
 	}
 
 	@Override
-	public void render(float delta) {
+	public void render(final float delta) {
 		Gdx.gl.glClearColor(0.05f, 0.05f, 0.05f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
@@ -112,10 +109,10 @@ public class MainMenuScreen extends ScreenAdapter {
 
 		batch.begin();
 		font.getData().setScale(2);
-		font.draw(batch, "SENTIENT BALL PIT", windowWidth/2 - 139, windowHeight/2 + 100);
+		font.draw(batch, "SENTIENT BALL PIT", windowWidth / 2 - 139, windowHeight / 2 + 100);
 		font.getData().setScale(1);
 		font.draw(batch, "Movement:  WASD\nShoot:  Left Mouse\nSpace:  Shotgun\nPause:  Esc",
-				windowWidth/2 - 60, windowHeight/2 - 400);
+				windowWidth / 2 - 60, windowHeight / 2 - 400);
 		batch.end();
 	}
 

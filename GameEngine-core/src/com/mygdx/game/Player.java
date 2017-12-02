@@ -3,7 +3,6 @@ package com.mygdx.game;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.math.Circle;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
@@ -35,14 +34,16 @@ public class Player {
 	/**  Applied acceleration upon movement in m/s^2.*/
 	private float playerAcceleration = 30.0f;
 	
+	/**  */
 	private float health = 100f;
 	
+	/**  */
 	private float bulletDamage = 10f;
 	
-	private float numShots = 1;
-	
+	/**  */
 	private int killCount;
 	
+	/**  */
 	private int score;
 	
 	/**  Time between shots in seconds.*/
@@ -137,44 +138,15 @@ public class Player {
 	}
 	
 	/**
-	 * When a directional button is not being pressed,
-	 * and the velocity of that direction is not zero,
-	 * then accelerate negatively to cancel velocity even while accelerating
-	 * in other directions.
 	 * 
-	 * @param caseNum direction acceptable for negative acceleration.
 	 */
-	/**
-	 * public void simulateResistance(final int caseNum) {
-		
-	
-		float xVelocity = solidBody.getLinearVelocity().x;
-		
-		float yVelocity = solidBody.getLinearVelocity().y;
-		
-		if (caseNum == 1 && xVelocity < 0)  {
-			solidBody.applyForceToCenter(8.0f, 0, true);
-		} else if (caseNum == 2 && xVelocity > 0) {
-			solidBody.applyForceToCenter(-8.0f, 0, true);
-		} 
-		
-		if (caseNum == 3 && yVelocity > 0) {
-			solidBody.applyForceToCenter(0, -8.0f, true);
-		} else if (caseNum == 4 && yVelocity < 0)  {
-			solidBody.applyForceToCenter(0, 8.0f, true);
-		}
-	}
-*/
-	
-	
-public void simulateResistance() {
-		
+	public void simulateResistance() {
 		/** Current X velocity. */
 		float xVelocity = solidBody.getLinearVelocity().x;
 		/** Current Y velocity. */
 		float yVelocity = solidBody.getLinearVelocity().y;
-		float xResistance = 1 + Math.abs(xVelocity/5);
-		float yResistance = 1 + Math.abs(yVelocity/5);
+		float xResistance = 1 + Math.abs(xVelocity / 5);
+		float yResistance = 1 + Math.abs(yVelocity / 5);
 		if (xVelocity < 0)  {
 			solidBody.applyForceToCenter(xResistance, 0, true);
 		} else if (xVelocity > 0) {
@@ -216,8 +188,8 @@ public void simulateResistance() {
 		float yVelocity = solidBody.getLinearVelocity().y;
 		
 		float sum = Math.abs(xVelocity) + Math.abs(yVelocity);
-		float xRat = xVelocity/sum;
-		float yRat = yVelocity/sum;
+		float xRat = xVelocity / sum;
+		float yRat = yVelocity / sum;
 		float xCap = Math.abs(xRat * maxVelocity);
 		float yCap = Math.abs(yRat * maxVelocity);
 		float newX = xVelocity;
@@ -232,118 +204,44 @@ public void simulateResistance() {
 		} else if (yVelocity < -yCap) {
 			newY = -yCap;
 		}
-		
 		solidBody.setLinearVelocity(newX, newY);
-		/*
-		float halfMax = maxVelocity/2;
-		if (xVelocity > maxVelocity) {
-			solidBody.setLinearVelocity(maxVelocity, yVelocity);	
-		} else if (xVelocity < -maxVelocity) {
-			solidBody.setLinearVelocity(-maxVelocity, yVelocity);
-		}
-		
-		if (yVelocity > maxVelocity) {
-			solidBody.setLinearVelocity(xVelocity, maxVelocity);
-		} else if (yVelocity < -maxVelocity) {
-			solidBody.setLinearVelocity(xVelocity, -maxVelocity);
-		}
-		if (xVelocity > halfMax) {
-			if(yVelocity > halfMax) {
-				solidBody.setLinearVelocity(halfMax, halfMax);
-			} else if (yVelocity < -halfMax) {
-				solidBody.setLinearVelocity(halfMax, -halfMax);
-			}
-		} else if (xVelocity < -halfMax) {
-			if(xVelocity > halfMax) {
-				solidBody.setLinearVelocity(-halfMax, halfMax);
-			} else if (xVelocity < -halfMax) {
-				solidBody.setLinearVelocity(-halfMax, -halfMax);
-			}
-		}*/
 	}
+	
 	/*
 	 * Attempted fix of movement bugs. Almost works.
 	 * all this really does is even out acceleration diagonally - not cap it
 	 */
 	
-	public void move(boolean right, boolean left, boolean up, boolean down) {
+	public void move(final boolean right, final boolean left, final boolean up, final boolean down) {
 		float xVelocity = solidBody.getLinearVelocity().x;
 		float yVelocity = solidBody.getLinearVelocity().y;
-		float force = (playerAcceleration*2)/3;
+		float force = (playerAcceleration * 2) / 3;
 		if ((Math.abs(xVelocity) < maxVelocity) && (Math.abs(yVelocity) < maxVelocity)) {
 			if (left && !up && !down) {
 				solidBody.applyForceToCenter(-playerAcceleration, 0, true);
-			}
-			else if (right && !up && !down) {
+			} else if (right && !up && !down) {
 				solidBody.applyForceToCenter(playerAcceleration, 0, true);
-			}
-			else if (up && !right && !left) {
+			} else if (up && !right && !left) {
 				solidBody.applyForceToCenter(0, playerAcceleration, true);
-			}
-			else if (down && !right && !left) {
+			} else if (down && !right && !left) {
 				solidBody.applyForceToCenter(0, -playerAcceleration, true);
-			}
-			else if (left && (up || down)) {
+			} else if (left && (up || down)) {
 				if (up) {
 					solidBody.applyForceToCenter(-force, force, true);
-				}
-				else if (down) {
+				} else if (down) {
 					solidBody.applyForceToCenter(-force, -force, true);
 				}
-			}
-			else if (right && (up || down)) {
+			} else if (right && (up || down)) {
 				if (up) {
 					solidBody.applyForceToCenter(force, force, true);
-				}
-				else if (down) {
+				} else if (down) {
 					solidBody.applyForceToCenter(force, -force, true);
 				}
 			}
-			
 		}
 		simulateResistance();
 		velocityCap();
 	}
-	/*
-	public void move(boolean right, boolean left, boolean up, boolean down) {
-		if (left) {
-			solidBody.applyForceToCenter(-playerAcceleration, 0, true);
-		} else if (right) {
-			solidBody.applyForceToCenter(playerAcceleration, 0, true);
-		}
-		if (up) {
-			solidBody.applyForceToCenter(0, playerAcceleration, true);
-		} else if (down) {
-			solidBody.applyForceToCenter(0, -playerAcceleration, true);
-		}
-		simulateResistance();
-		velocityCap();
-	}*/
-	
-	/*
-	public void move(boolean right, boolean left, boolean up, boolean down, float dt) {
-		Vector2 position = new Vector2 (solidBody.getPosition());
-		Vector2 acceleration = new Vector2(0,0);
-		Vector2 velocity = new Vector2(solidBody.getLinearVelocity());
-		//float acceleration = playerAcceleration;
-		if (left) {
-			acceleration.x = -playerAcceleration;
-		} else if (right) {
-			acceleration.x = playerAcceleration;
-		}
-		if (up) {
-			acceleration.y = playerAcceleration;
-		} else if (down) {
-			acceleration.y = -playerAcceleration;
-		}
-		acceleration.x = acceleration.x * dt;
-		acceleration.y = acceleration.y * dt;
-		
-		velocity.x += acceleration.x;
-		velocity.y += acceleration.y;
-		
-		
-	}*/
 	
 	/**
 	 * Sets graphical object's position to a physical body's position.
@@ -368,7 +266,7 @@ public void simulateResistance() {
 		return body.y;
 	}
 	
-	public void takeDamage(float damage) {
+	public void takeDamage(final float damage) {
 		health -= damage;
 	}
 	
@@ -400,15 +298,12 @@ public void simulateResistance() {
 		return score;
 	}
 	
-	public void multMovement(float mult) {
+	public void multMovement(final float mult) {
 		maxVelocity *= mult;
 		playerAcceleration *= mult;
 		if (shotTime > .05f) {
 			shotTime -= mult * .01f;
 			shotgunTime -= mult * .02f;
-			
 		}
-		System.out.println(shotTime);
 	}
 }
-

@@ -12,12 +12,12 @@ public class Listener implements ContactListener {
 	private String path = "class com.mygdx.game.";
 	private GameEngine gE;
 	
-	Listener (GameEngine gE) {
+	Listener(final GameEngine gE) {
 		this.gE = gE;
 	}
 	//need to make sure spawning does not happen on top of another object
 	@Override
-	public void beginContact(Contact contact) {
+	public void beginContact(final Contact contact) {
 		Object objA = contact.getFixtureA().getUserData();
 		A = objA.getClass().toString();
 		
@@ -55,11 +55,12 @@ public class Listener implements ContactListener {
 			B = "demon";
 		}
 		
-		if ((A.equals("swarmer") || A.equals("spitter") || A.equals("demon")) && B.equals("playerpProj")) {
+		if ((A.equals("swarmer") || A.equals("spitter") || A.equals("demon")) 
+				&& B.equals("playerpProj")) {
 			Enemy a;
 			if (A.equals("swarmer")) {
 				a = (Swarmer) contact.getFixtureA().getUserData();
-			} else if (A.equals("spitter")){
+			} else if (A.equals("spitter")) {
 				a = (Spitter) contact.getFixtureA().getUserData();
 			} else {
 				a = (Demon) contact.getFixtureA().getUserData();
@@ -69,13 +70,12 @@ public class Listener implements ContactListener {
 				gE.incrementKillCount();
 			}
 			b.setDeletable();
-			
-		}
-		else if (A.equals("playerpProj") && (B.equals("swarmer") || B.equals("spitter") || B.equals("demon"))) {
+		} else if (A.equals("playerpProj") 
+				&& (B.equals("swarmer") || B.equals("spitter") || B.equals("demon"))) {
 			Enemy b;
 			if (B.equals("swarmer")) {
 				b = (Swarmer) contact.getFixtureB().getUserData();
-			} else if (B.equals("spitter")){
+			} else if (B.equals("spitter")) {
 				b = (Spitter) contact.getFixtureB().getUserData();
 			} else {
 				b = (Demon) contact.getFixtureB().getUserData();
@@ -87,11 +87,12 @@ public class Listener implements ContactListener {
 			a.setDeletable();
 		}
 		
-		if ((A.equals("swarmer") || A.equals("spitter") || A.equals("demon")) && B.equals("player")) {
+		if ((A.equals("swarmer") || A.equals("spitter") || A.equals("demon")) 
+				&& B.equals("player")) {
 			Enemy a;
 			if (A.equals("swarmer")) {
 				a = (Swarmer) contact.getFixtureA().getUserData();
-			} else if (A.equals("spitter")){
+			} else if (A.equals("spitter")) {
 				a = (Spitter) contact.getFixtureA().getUserData();
 			} else {
 				a = (Demon) contact.getFixtureA().getUserData();
@@ -100,12 +101,12 @@ public class Listener implements ContactListener {
 			a.pushAway();
 			b.takeDamage(a.getBodyDamage());
 			gE.flashRed();
-		}
-		else if (A.equals("player") && (B.equals("swarmer") || B.equals("spitter") || B.equals("demon"))) {
+		} else if (A.equals("player") 
+				&& (B.equals("swarmer") || B.equals("spitter") || B.equals("demon"))) {
 			Enemy b;
 			if (B.equals("swarmer")) {
 				b = (Swarmer) contact.getFixtureB().getUserData();
-			} else if (B.equals("spitter")){
+			} else if (B.equals("spitter")) {
 				b = (Spitter) contact.getFixtureB().getUserData();
 			} else {
 				b = (Demon) contact.getFixtureB().getUserData();
@@ -134,17 +135,14 @@ public class Listener implements ContactListener {
 	}
 
 	@Override
-	public void endContact(Contact contact) {
-		
+	public void endContact(final Contact contact) {
 	}
 
 	@Override
-	public void preSolve(Contact contact, Manifold oldManifold) {
-
+	public void preSolve(final Contact contact, final Manifold oldManifold) {
 	}
 
 	@Override
-	public void postSolve(Contact contact, ContactImpulse impulse) {
-
+	public void postSolve(final Contact contact, final ContactImpulse impulse) {
 	}
 }

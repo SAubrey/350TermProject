@@ -17,15 +17,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.utils.Align;
 
-public class PauseScreen extends ScreenAdapter{
+public class PauseScreen extends ScreenAdapter {
 
-	public SpriteBatch batch;
-	public BitmapFont font;
-	final ScreenManager sM;
-	final GameEngine gE;
+	private SpriteBatch batch;
+	private BitmapFont font;
+	private final ScreenManager sM;
+	private final GameEngine gE;
 	private OrthographicCamera camera;
 	private Stage stage;
 	private Table table;
@@ -74,7 +73,7 @@ public class PauseScreen extends ScreenAdapter{
 		skin.add("default", style);
 		
 		resume = new TextButton("Resume", skin);
-		resume.setPosition(windowWidth/2 - 50, windowHeight/2 - 50, Align.center);
+		resume.setPosition(windowWidth / 2 - 50, windowHeight / 2 - 50, Align.center);
 		table.add(resume).minSize(150, 65);
 		table.padBottom(-200);
 		table.row();
@@ -85,14 +84,14 @@ public class PauseScreen extends ScreenAdapter{
 	
 	private void addListeners() {
 		resume.addListener(new ChangeListener() {
-			public void changed (ChangeEvent event, Actor resume) {
+			public void changed(final ChangeEvent event, final Actor resume) {
 				sM.setScreen(gE);
 				gE.resume();
 			}
 		});
 		
 		quit.addListener(new ChangeListener() {
-			public void changed (ChangeEvent event, Actor quit) {
+			public void changed(final ChangeEvent event, final Actor quit) {
 				dispose();
 				Gdx.app.exit();
 			}
@@ -100,7 +99,7 @@ public class PauseScreen extends ScreenAdapter{
 	}
 	
 	@Override
-	public void render(float delta) {
+	public void render(final float delta) {
 		Gdx.gl.glClearColor(0.05f, 0.05f, 0.05f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
@@ -112,11 +111,12 @@ public class PauseScreen extends ScreenAdapter{
 
 		batch.begin();
 		font.getData().setScale(2);
-		font.draw(batch, "PAUSED", windowWidth/2 - 55, windowHeight/2 + 100);
+		font.draw(batch, "PAUSED", windowWidth / 2 - 55, windowHeight / 2 + 100);
 		font.getData().setScale(1);
-		font.draw(batch, "Score:  " + gE.player.getScore(), windowWidth/2 - 35, windowHeight/2 + 40);
+		font.draw(batch, "Score:  " + gE.getPlayer().getScore(), 
+				windowWidth / 2 - 35, windowHeight / 2 + 40);
 		font.draw(batch, "Movement:  WASD\nShoot:  Left Mouse\nSpace:  Shotgun\nPause:  Esc",
-				windowWidth/2 - 60, windowHeight/2 - 400);
+				windowWidth / 2 - 60, windowHeight / 2 - 400);
 		batch.end();
 	}
 }

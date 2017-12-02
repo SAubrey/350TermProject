@@ -4,10 +4,10 @@ import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 
 /**
  * Projectile class creates its own body and calculates 
@@ -21,97 +21,72 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 public class Projectile {
 	
 	/**  Interval in seconds before Projectile triggers despawn.*/
-	public final float despawnTime = 2.0f;
-	
-	/** Scaled Y value of the window. */
-	public int viewportHeight;
+	private final float despawnTime = 2.0f;
 	
 	/**  Velocity limit.*/
-	public int maxVelocity;
-	
-	public float damage;
-    
-	/**  Size of physical body.*/
-	public float size;
-    
-	/**  Projectile source's X position.*/
-	public float sourceX;
-    
-	/**  Projectile source's Y position.*/
-	public float sourceY;
+	private int maxVelocity;
+	/** */
+	private float damage;
 	
 	/**  Accumulates time between frames. */
-	public float accumulator;
+	private float accumulator;
 	
-	public float targetX;
-	
-	public float targetY;
-	
-	public float dX;
-	
-	public float dY;
-	
-	public float slope;
-	
-	public float displacement;
-	
-	/**  X and Y velocity.*/
-	public Vector2 vel;
+	/** */
+	private float dX;
+	/** */
+	private float dY;
 	
 	/**  Temporary position vector.*/
-	public Vector2 vec;
-	
-	/**  X and Y values for where Projectiles spawns relative to Player.*/
-	public Vector2 quad;
+	private Vector2 vec;
 	
 	/**  Circle shape.*/
-	public Circle body;
+	private Circle body;
 	
 	/**  Characteristics of physical body.*/
-	public BodyDef bodyDef;
+	private BodyDef bodyDef;
 	
 	/**  Physical body.*/
-	public Body solidBody;
+	private Body solidBody;
 	
 	/**  Box2D circle shape.*/
-	public CircleShape circle;
+	private CircleShape circle;
 	
 	/**  Characteristics of fixture.*/
-	public FixtureDef fixtureDef;
+	private FixtureDef fixtureDef;
 	
 	/**  Attaches a physical body to its qualities.*/
-	@SuppressWarnings("unused")
-	public Fixture fixture;
+	private Fixture fixture;
 	
 	/**
 	 * Constructor that assigns passed values locally that will be used
 	 * to calculate trajectory. Creates graphical and physical body objects.
-	 * @param playerX player's X coordinate in pixels.
-	 * @param playerY player's Y coordinate in pixels.
-	 * @param mouseX cursor's X coordinate in pixels.
-	 * @param mouseY cursor's Y coordinate in pixels.
+	 * @param sourceX player's X coordinate in pixels.
+	 * @param sourceY player's Y coordinate in pixels.
+	 * @param targetX cursor's X coordinate in pixels.
+	 * @param targetY cursor's Y coordinate in pixels.
+	 * @param bulletDamage projectile's damage
 	 */
 	public Projectile(final float sourceX, final float sourceY,
-			final float targetX, final float targetY, float bulletDamage) {
-		this.targetX = targetX;
-		this.targetY = targetY;
-		this.sourceX = sourceX;
-		this.sourceY = sourceY;
+			final float targetX, final float targetY, final float bulletDamage) {
 		damage = bulletDamage;
 		dX = targetX - sourceX;
 		dY = targetY - sourceY;
-		viewportHeight = GameEngine.getViewHeight();
-		size = GameEngine.getProjRadius();
-		/*
+	}
+	
+	/**
+	 * Allows subclasses to build the body after modifying passed in data.
+	 * @param sourceX Projectile's source x position.
+	 * @param sourceY Projectile's source y position.
+	 */
+	public void buildBody(final float sourceX, final float sourceY) {
 		body = new Circle();
 		bodyDef = new BodyDef();
 		bodyDef.type = BodyType.DynamicBody;
 		vec = new Vector2(determineQuadrant());
 		bodyDef.position.set(sourceX + vec.x, sourceY + vec.y);
-		solidBody = GameEngine.getWorld().createBody(bodyDef);// problem here???
-		solidBody.setUserData("");
+		solidBody = GameEngine.getWorld().createBody(bodyDef);
 		circle = new CircleShape();
-		circle.setRadius(size);
+		circle.setRadius(GameEngine.getProjRadius());
 		
 		fixtureDef = new FixtureDef();
 		fixtureDef.shape = circle;
@@ -119,10 +94,6 @@ public class Projectile {
 		fixtureDef.friction = 0.4f;
 		fixtureDef.restitution = 0.8f; // bounciness
 		fixture = solidBody.createFixture(fixtureDef);
-		fixture.setUserData(this);
-
-		calculateVelocity();
-		*/
 	}
 
 	/**
@@ -133,8 +104,8 @@ public class Projectile {
 	 * where n is X/Y slope and B is max velocity.
 	 */
 	public void calculateVelocity() {
-		vel = new Vector2();
-		slope = Math.abs(dX / dY);
+		Vector2 vel = new Vector2();
+		float slope = Math.abs(dX / dY);
 		if (dX > 0) {
 			if (dY >= 0) {
 				vel.x = maxVelocity * (slope / (slope + 1));
@@ -152,12 +123,6 @@ public class Projectile {
 				vel.y = -maxVelocity * (1 / (slope + 1));
 			}
 		}
-		//Used for debug
-		/*
-		System.out.println(" pX: " + playerX + " dX: " 
-		+ dX + " pY: " + playerY +  " dY: " + dY + " slope: " +
-		slope + " xVel: " + vel.x + " yVel: " + vel.y);
-		*/
 		solidBody.setLinearVelocity(vel);
 	}
 	
@@ -167,8 +132,8 @@ public class Projectile {
 	 * @return vector signifying quadrant of player.
 	 */
 	public Vector2 determineQuadrant() {
-		displacement = 0.1f;
-		quad = new Vector2();
+		float displacement = .1f;
+		Vector2 quad = new Vector2();
 		if (dX > 0) {
 			if (dY > 0) {
 				quad.x = displacement;
@@ -190,29 +155,6 @@ public class Projectile {
 	}
 	
 	/**
-	 * Applies acceleration against the velocity of the projectile
-	 * to slow it down. 
-	 */
-	/*
-	public void simulateResistance() {
-		float xVelocity = solidBody.getLinearVelocity().x;
-		float yVelocity = solidBody.getLinearVelocity().y;
-		float resistance = 3f;
-		
-		if (xVelocity < 0)  {
-			solidBody.applyForceToCenter(resistance, 0, true);
-		} else if (xVelocity > 0) {
-			solidBody.applyForceToCenter(-resistance, 0, true);
-		} 
-		
-		if (yVelocity > 0) {
-			solidBody.applyForceToCenter(0, -resistance, true);
-		} else if (yVelocity < 0)  {
-			solidBody.applyForceToCenter(0, resistance, true);
-		}
-	}*/
-	
-	/**
 	 * Sets graphical object's position to a physical body's position.
 	 */
 	public void setPos() {
@@ -222,30 +164,60 @@ public class Projectile {
 	/**
 	 * Accumulates time until the despawn time is reached.
 	 * @param time difference between frames.
+	 * @return true if the projectile has been set for deletion
 	 */
 	public boolean deletable(final float time) {
 		accumulator += time;
-		
 		if (accumulator >= despawnTime) {
-			//GameEngine.getWorld().destroyBody(solidBody);
 			solidBody.setUserData("deletable");
 			return true;
 		}
 		return false;
 	}
 	
+	/**
+	 * Sets accumulated time to its despawn time.
+	 */
 	public void setDeletable() {
 		accumulator = despawnTime;
 	}
 	
 	/**
+	 * Sets body's maximum velocity.
+	 * @param v velocity
+	 */
+	public void setMaxVelocity(final int v) {
+		maxVelocity = v;
+	}
+	
+	/**
+	 * Sets difference in Y between source and target.
+	 * @param dY deltaY
+	 */
+	public void setDeltaY(final float dY) {
+		this.dY = dY;
+	}
+	
+	/**
 	 * Returns physical body.
-	 * @return projectile's physical body.
+	 * @return projectile's physical body
 	 */
 	public Body getBody() {
 		return solidBody;
 	}
 	
+	/**
+	 * Returns body fixture.
+	 * @return projectile's body fixture
+	 */
+	public Fixture getFixture() {
+		return fixture;
+	}
+	
+	/**
+	 * Returns projectile contact damage.
+	 * @return damage bullet's damage
+	 */
 	public float getBulletDamage() {
 		return damage;
 	}
