@@ -1,4 +1,4 @@
-package com.mygdx.game;
+package com.mygdx.game; 
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -8,9 +8,9 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 
 /**
- * EnemyManager class spawns and keeps track of all
- * enemy objects.
- *
+ * EnemyManager class spawns and keeps track of all enemy objects.
+ * 
+ * @author Sean Aubrey, Gabriel Fountain, Brandon Conn
  */
 public class EnemyManager {
 
@@ -116,6 +116,7 @@ public class EnemyManager {
 		bodies = new Array<Body>();
 		rand = new Random();
 	}
+	
 	/**
 	 * Updates timers and spawner methods. Clears enemies if their health is below 0.
 	 * @param playerX Player's x position
@@ -146,6 +147,9 @@ public class EnemyManager {
 		}
 	}
 
+	/**
+	 * 
+	 */
 	private void spawn() {
 		playerSum = playerX + playerY;
 		validSpawn = false;
@@ -189,6 +193,9 @@ public class EnemyManager {
 	//already a body at the spawn location"
 	// make sure it's spawning in bounds, and not on another body
 	// use try catch to check failure location?
+	/**
+	 * 
+	 */
 	private void spawnSwarmerGroup() {
 		playerSum = playerX + playerY;
 		validSpawn = false;
@@ -232,6 +239,9 @@ public class EnemyManager {
 		return false;
 	}
 	
+	/**
+	 * 
+	 */
 	public void demonSlain() {
 		demonAccumulator = 0;
 		demonsSlain++;
@@ -240,6 +250,9 @@ public class EnemyManager {
 		player.multMovement(multiplier);
 	}
 	
+	/**
+	 * 
+	 */
 	private void trackProgress() {
 		// only spawn once every 10 seconds, and not immediately
 		if (!demonSpawned) {

@@ -1,20 +1,40 @@
-package com.mygdx.game;
+package com.mygdx.game; 
 
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Manifold;
 
+/**
+ * 
+ * @author Sean Aubrey, Gabriel Fountain, Brandon Conn
+ */
 public class Listener implements ContactListener {
 
+	/**   */
 	private String A;
+	
+	/**   */
 	private String B;
+	
+	/**   */
 	private String path = "class com.mygdx.game.";
+	
+	/**   */
 	private GameEngine gE;
 	
+	/**
+	 * 
+	 * @param gE
+	 */
 	Listener(final GameEngine gE) {
 		this.gE = gE;
 	}
+	
+	/**
+	 * 
+	 * @param contact
+	 */
 	//need to make sure spawning does not happen on top of another object
 	@Override
 	public void beginContact(final Contact contact) {
@@ -134,14 +154,28 @@ public class Listener implements ContactListener {
 		//conditionals for enemy projectile and player
 	}
 
+	/**
+	 * 
+	 * @param contact
+	 */
 	@Override
 	public void endContact(final Contact contact) {
 	}
 
+	/**
+	 * 
+	 * @param contact
+	 * @param oldManifold
+	 */
 	@Override
 	public void preSolve(final Contact contact, final Manifold oldManifold) {
 	}
 
+	/**
+	 * 
+	 * @param contact
+	 * @param impulse
+	 */
 	@Override
 	public void postSolve(final Contact contact, final ContactImpulse impulse) {
 	}

@@ -1,4 +1,4 @@
-package com.mygdx.game;
+package com.mygdx.game; 
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
@@ -19,18 +19,44 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 
+/**
+ * 
+ * 
+ * @author Sean Aubrey, Gabriel Fountain, Brandon Conn
+ */
 public class DeathScreen extends ScreenAdapter {
 	
+	/**   */
 	private SpriteBatch batch;
+	
+	/**   */
 	private BitmapFont font;
+	
+	/**   */
 	final private ScreenManager sM;
+	
+	/**   */
 	private GameEngine gE;
+	
+	/**   */
 	private OrthographicCamera camera;
+	
+	/**   */
 	private Stage stage;
+	
+	/**   */
 	private Table table;
+	
+	/**   */
 	private Skin skin;
+	
+	/**   */
 	private TextButtonStyle style;
+	
+	/**   */
 	private TextButton play;
+	
+	/**   */
 	private TextButton quit;
 	
 	/**  Y value in pixels.*/
@@ -39,6 +65,11 @@ public class DeathScreen extends ScreenAdapter {
 	/**  X value in pixels.*/
 	private int windowWidth;
 
+	/**
+	 * 
+	 * @param screenManager
+	 * @param gE
+	 */
 	public DeathScreen(final ScreenManager screenManager, final GameEngine gE) {
 		this.sM = screenManager;
 		this.gE = gE;
@@ -82,6 +113,9 @@ public class DeathScreen extends ScreenAdapter {
 		addListeners();
 	}
 	
+	/**
+	 * 
+	 */
 	private void addListeners() {
 		play.addListener(new ChangeListener() {
 			public void changed(final ChangeEvent event, final Actor play) {
@@ -92,6 +126,8 @@ public class DeathScreen extends ScreenAdapter {
 		});
 		
 		quit.addListener(new ChangeListener() {
+			
+			/**   */
 			public void changed(final ChangeEvent event, final Actor quit) {
 				gE.dispose();
 				Gdx.app.exit();
@@ -99,6 +135,11 @@ public class DeathScreen extends ScreenAdapter {
 		});
 	}
 	
+	/**
+	 * 
+	 * 
+	 * @param delta
+	 */
 	@Override
 	public void render(final float delta) {
 		Gdx.gl.glClearColor(0.05f, 0.05f, 0.05f, 1);

@@ -1,4 +1,4 @@
-package com.mygdx.game;
+package com.mygdx.game; 
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
@@ -19,17 +19,40 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 
+/**
+ * 
+ * @author Sean Aubrey, Gabriel Fountain, Brandon Conn
+ */
 public class MainMenuScreen extends ScreenAdapter {
 
+	/**   */
 	private SpriteBatch batch;
+	
+	/**   */
 	private BitmapFont font;
+	
+	/**   */
 	private final ScreenManager sM;
+	
+	/**   */
 	private OrthographicCamera camera;
+	
+	/**   */
 	private Stage stage;
+	
+	/**   */
 	private Table table;
+	
+	/**   */
 	private Skin skin;
+	
+	/**   */
 	private TextButtonStyle style;
+	
+	/**   */
 	private TextButton play;
+	
+	/**   */
 	private TextButton quit;
 	
 	/**  Y value in pixels.*/
@@ -38,6 +61,10 @@ public class MainMenuScreen extends ScreenAdapter {
 	/**  X value in pixels.*/
 	private int windowWidth;
 
+	/**
+	 * 
+	 * @param screenManager
+	 */
 	public MainMenuScreen(final ScreenManager screenManager) {
 		this.sM = screenManager;
 		windowHeight = Gdx.graphics.getHeight();
@@ -80,6 +107,9 @@ public class MainMenuScreen extends ScreenAdapter {
 		addListeners();
 	}
 	
+	/**
+	 * 
+	 */
 	private void addListeners() {
 		play.addListener(new ChangeListener() {
 			public void changed(final ChangeEvent event, final Actor play) {
@@ -96,6 +126,10 @@ public class MainMenuScreen extends ScreenAdapter {
 		});
 	}
 
+	/**
+	 * 
+	 * @param delta
+	 */
 	@Override
 	public void render(final float delta) {
 		Gdx.gl.glClearColor(0.05f, 0.05f, 0.05f, 1);
@@ -116,10 +150,16 @@ public class MainMenuScreen extends ScreenAdapter {
 		batch.end();
 	}
 
+	/**
+	 * 
+	 */
 	@Override
 	public void hide() {
 	}
 
+	/**
+	 * 
+	 */
 	@Override
 	public void dispose() {
 		stage.dispose();

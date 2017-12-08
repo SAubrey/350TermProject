@@ -1,4 +1,4 @@
-package com.mygdx.game;
+package com.mygdx.game; 
 
 import java.util.ArrayList;
 
@@ -33,12 +33,12 @@ public class Player {
 	private float maxVelocity = 80f;
 	
 	/**  Applied acceleration upon movement in m/s^2.*/
-	private float playerAcceleration = 30.0f;
+	private float playerAcceleration = 30.0f; //30->79
 	
 	/** Amount of damage Player can take */
-	private float health = 100f;
+	private float health = 100f;//100->1000
 	
-	/** Amont of damage of Player projectiles. */
+	/** Amount of damage of Player projectiles. */
 	private float bulletDamage = 10f;
 	
 	/** Number of enemies defeated. */
@@ -48,10 +48,10 @@ public class Player {
 	private int score;
 	
 	/**  Time between shots in seconds.*/
-	private float shotTime = 0.2f;
+	private float shotTime = 0.8f; //0.8->0.05
 	
 	/**  Time between shots in seconds.*/
-	private float shotgunTime = 1f;
+	private float shotgunTime = 1.0f; //1.0->0.05
 	
 	/** Circle shape. */
 	private Circle body;
@@ -69,7 +69,6 @@ public class Player {
 	private FixtureDef fixtureDef;
 	
 	/** Attaches a physical body to its qualities. */
-	
 	private Fixture fixture;
 	
 	/** All projectiles fired from Player. */
@@ -119,6 +118,11 @@ public class Player {
 			projectiles.add(p);
 	}
 	
+	/**
+	 * 
+	 * @param mouseX
+	 * @param mouseY
+	 */
 	public void fireShotgun(final float mouseX, final float mouseY)  {
 		PlayerProjectile a = new PlayerProjectile(getX(), getY(), mouseX, mouseY, bulletDamage);
 		projectiles.add(a);
@@ -195,10 +199,16 @@ public class Player {
 		}
 		return v;
 	}
-	
-	/*
-	 * Attempted fix of movement bugs. Almost works.
-	 * all this really does is even out acceleration diagonally - not cap it
+
+	 //Attempted fix of movement bugs. Almost works.
+	 //all this really does is even out acceleration diagonally - not cap it
+
+	/**
+	 * 
+	 * @param right
+	 * @param left
+	 * @param up
+	 * @param down
 	 */
 	private Vector2 move(final boolean right, final boolean left,
 			final boolean up, final boolean down) {
@@ -263,14 +273,25 @@ public class Player {
 		return body.y;
 	}
 	
+	/**
+	 * 
+	 * @param damage
+	 */
 	public void takeDamage(final float damage) {
 		health -= damage;
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public float getHealth() {
 		return health;
 	}
 	
+	/**
+	 * 
+	 */
 	public void incrementKillCount() {
 		killCount++;
 		if (health != 100) {
@@ -279,22 +300,42 @@ public class Player {
 		score++;
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public int getKillCount() {
 		return killCount;
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public float getShotTime() {
 		return shotTime;
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public float getShotgunTime() {
 		return shotgunTime;
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public int getScore() {
 		return score;
 	}
 	
+	/**
+	 * 
+	 * @param mult
+	 */
 	public void multMovement(final float mult) {
 		maxVelocity *= mult;
 		playerAcceleration *= mult;

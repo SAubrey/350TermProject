@@ -1,18 +1,19 @@
-package com.mygdx.game;
+package com.mygdx.game; 
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 /**
- *
+ * 
+ * @author Sean Aubrey, Gabriel Fountain, Brandon Conn
  */
 public class ScreenManager extends Game {
 
-	/** */
+	/**   */
 	private SpriteBatch batch;
 	
-	/** */
+	/**   */
 	private BitmapFont font;
 	
 	/**

@@ -1,4 +1,4 @@
-package com.mygdx.game;
+package com.mygdx.game; 
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -49,14 +49,19 @@ public class GameEngine extends ScreenAdapter {
 	/**  Circular projectile size in meters.*/
 	private static float projectileRadius = 0.7f;
 	
+	/**   */
 	private static float swarmerRadius = 0.8f;
 	
+	/**   */
 	private static float spitterRadius = 2f;
 	
+	/**   */
 	private static float demonRadius = 10f;
 	
+	/**   */
 	private GameState state = GameState.RUN;
 	
+	/**   */
 	private boolean flashRed;
 	
 	/**  Box2D physical object management plane.*/
@@ -86,6 +91,7 @@ public class GameEngine extends ScreenAdapter {
 	/**  Player object.*/
 	private Player player;
 	
+	/**   */
 	private Listener listener;
 	
 	/**  All bodies detected in the world.*/
@@ -103,22 +109,30 @@ public class GameEngine extends ScreenAdapter {
 	/**  Time counter before shotgun is fired.*/
 	private float shotgunAccumulator;
 	
+	/**   */
 	private EnemyManager eMan;
 	
+	/**   */
 	private Texture healthBar;
 	
 	//private Texture vignette;
 	
+	/**   */
 	private Texture background;
 	
+	/**   */
 	private Sound song;
 	
+	/**   */
 	private Sound shot;
 	
-	private float playerHealth = 100;
+	/**   */
+	private float playerHealth = 100; //100->1000
 	
+	/**   */
 	private final ScreenManager sM;
 	
+	/**   */
 	private SpriteBatch batch;
 	
 	/**
@@ -160,6 +174,8 @@ public class GameEngine extends ScreenAdapter {
 	 * Updates physical state.
 	 * Listens for user input.
 	 * Performs a physics step of the world.
+	 * 
+	 * @param delta
 	 */
 	@Override
 	public void render(final float delta) {
@@ -183,10 +199,17 @@ public class GameEngine extends ScreenAdapter {
 		}
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public static float getDeltaTime() {
 		return Gdx.graphics.getDeltaTime();
 	}
 	
+	/**
+	 * 
+	 */
 	private void updateGraphics() {
 		Gdx.gl.glClearColor(0, 0, 0, 0);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -221,6 +244,9 @@ public class GameEngine extends ScreenAdapter {
 		camera.update();
 	}
 	
+	/**
+	 * 
+	 */
 	public void flashRed() {
 		flashRed = true;
 	}
@@ -294,6 +320,9 @@ public class GameEngine extends ScreenAdapter {
 		}
 	}
 	
+	/**
+	 * 
+	 */
 	private void checkMovement() {
 		boolean right = false, left = false, up = false, down = false;
 		if (Gdx.input.isKeyPressed(Input.Keys.A)) {
@@ -396,6 +425,9 @@ public class GameEngine extends ScreenAdapter {
 		fixture.setUserData(this);
 	}
 	
+	/**
+	 * 
+	 */
 	public void incrementKillCount() {
 		player.incrementKillCount();
 	}
@@ -521,16 +553,25 @@ public class GameEngine extends ScreenAdapter {
 		wallBox.dispose();
 	}
 	
+	/**
+	 * 
+	 */
 	@Override
 	public void pause() {
 		state = GameState.PAUSE;
 	}
 
+	/**
+	 * 
+	 */
 	@Override
 	public void resume() {
 		state = GameState.RUN;
 	}
 	
+	/**
+	 * 
+	 */
 	public void dead() {
 		state = GameState.DEAD;
 	}
