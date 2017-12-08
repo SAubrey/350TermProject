@@ -1,4 +1,4 @@
-package com.mygdx.game.Tests;
+package com.mygdx.game.Tests; 
 
 import static org.junit.Assert.*;
 

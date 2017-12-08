@@ -1,4 +1,4 @@
-package com.mygdx.game.desktop;
+package com.mygdx.game.desktop; 
 
 import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
