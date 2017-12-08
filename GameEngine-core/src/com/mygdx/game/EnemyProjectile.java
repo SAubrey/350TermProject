@@ -1,4 +1,4 @@
-package com.mygdx.game; 
+package com.mygdx.game;
 
 /**
  * Subclass of Projectile. Fired from all enemies.
