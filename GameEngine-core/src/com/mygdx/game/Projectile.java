@@ -103,25 +103,19 @@ public class Projectile {
 	 * Formula to determine X + Y velocities: BF(n) = B(n/(n+1)) + B(1/(n+1)),
 	 * where n is X/Y slope and B is max velocity.
 	 */
+		
 	public Vector2 calculateVelocity() {
 		Vector2 vel = new Vector2();
 		float slope = Math.abs(dX / dY);
 		if (dX > 0) {
-			if (dY >= 0) {
-				vel.x = maxVelocity * (slope / (slope + 1));
-				vel.y = maxVelocity * (1 / (slope + 1));
-			} else if (dY < 0) {
-				vel.x = maxVelocity * (slope / (slope + 1));
-				vel.y = -maxVelocity * (1 / (slope + 1));
-			}
+			vel.x = maxVelocity * (slope / (slope + 1));
 		} else if (dX < 0) {
-			if (dY >= 0) {
-				vel.x = -maxVelocity * (slope / (slope + 1));
-				vel.y = maxVelocity * (1 / (slope + 1));
-			} else if (dY < 0) {
-				vel.x = -maxVelocity * (slope / (slope + 1));
-				vel.y = -maxVelocity * (1 / (slope + 1));
-			}
+			vel.x = -maxVelocity * (slope / (slope + 1));
+		}
+		if (dY >= 0) {
+			vel.y = maxVelocity * (1 / (slope + 1));
+		} else if (dY < 0) {
+			vel.y = -maxVelocity * (1 / (slope + 1));
 		}
 		return vel;
 	}
@@ -136,19 +130,15 @@ public class Projectile {
 		Vector2 quad = new Vector2();
 		if (dX > 0) {
 			quad.x = displacement;
-			if (dY > 0) {
-				quad.y = displacement;
-			} else if (dY < 0) {
-				quad.y = -displacement;
-			}
 		} else if (dX < 0) {
 			quad.x = -displacement;
-			if (dY > 0) {
-				quad.y = displacement;
-			} else if (dY < 0) {
-				quad.y = -displacement;
-			}
 		}
+		if (dY > 0) {
+			quad.y = displacement;
+		} else if (dY < 0) {
+			quad.y = -displacement;
+		}
+
 		return quad;
 	}
 	

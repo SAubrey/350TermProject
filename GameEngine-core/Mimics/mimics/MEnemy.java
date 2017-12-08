@@ -42,6 +42,8 @@ public class MEnemy {
 	/** */
 	private Vector2 position;
 	
+	private Vector2 velocity;
+	
 	/** All projectiles fired from Enemy. */
 	//private ArrayList<EnemyProjectile> projectiles;
 	
@@ -70,6 +72,7 @@ public class MEnemy {
 	 */
 	public MEnemy(final float spawnX, final float spawnY) {
 		position = new Vector2(spawnX, spawnY);
+		velocity = new Vector2();
 		accumulator = 1.0f;
 		//projectiles = new ArrayList<EnemyProjectile>();
 	}
@@ -82,6 +85,7 @@ public class MEnemy {
 	 * @param density
 	 * @param restitution
 	 */
+	/*
 	public void buildBody(final float spawnX, final float spawnY, final float radius,
 			final float density, final float restitution) {
 		body = new Circle();
@@ -99,6 +103,7 @@ public class MEnemy {
 		fixtureDef.restitution = restitution; // bounciness
 		fixture = solidBody.createFixture(fixtureDef);
 	}
+	*/
 	
 	/**
 	 * 
@@ -106,63 +111,57 @@ public class MEnemy {
 	 * @param y
 	 */
 	public void update(final float x, final float y) {
-		playerX = x;
-		playerY = y;
+		setPlayerX(x);
+		setPlayerY(y);
+		//updatePos();
+		//updateVel();
 		//accumulator += GameEngine.getDeltaTime();
 	}
+
 	
-	public void pushAway() {
-		float x = solidBody.getLinearVelocity().x;
-		float y = solidBody.getLinearVelocity().y;
+	public Vector2 pushAway() {
+		Vector2 vec =  new Vector2();
+		float x = velocity.x;
+		float y = velocity.y;
 		accumulator = 0;
 		float xBurst = 90f;
 		float yBurst = 90f;
 		if (x > 0) {
-			x = -xBurst;
-			if (y > 0) {
-				y = -yBurst;
-			} else if (y < 0) {
-				y = yBurst;
-			}
-		} else if (x <= 0) {
-			x = xBurst;
-			if (y > 0) {
-				y = -yBurst;
-			} else if (y <= 0) {
-				y = yBurst;
-			}
+			vec.x = -xBurst;
+		} else if (x < 0) {
+			vec.x = xBurst;
 		}
-		solidBody.applyLinearImpulse(x, y, 0, 0, true);
+		if (y > 0) {
+			vec.y = -yBurst;
+		} else if (y < 0) {
+			vec.y = yBurst;
+		}
+		return vec;
 	}
+	/*
+	public void applyImpulse(Vector2 v) {
+		//solidBody.applyLinearImpulse(v.x, v.y, 0, 0, true);
+	}
+	*/
 	
-	public void calculateVelocity() {
+	public Vector2 calculateVelocity() {
 		if (accumulator > 1.0f) {
-			Vector2 vel = new Vector2();
 			float dX, dY, slope;
 			dX = playerX - position.x;
 			dY = playerY - position.y;
 			slope = Math.abs(dX / dY);
 			if (dX > 0) {
-				if (dY >= 0) {
-					vel.x = maxVelocity * (slope / (slope + 1));
-					vel.y = maxVelocity * (1 / (slope + 1));
-				}
-				if (dY < 0) {
-					vel.x = maxVelocity * (slope / (slope + 1));
-					vel.y = -maxVelocity * (1 / (slope + 1));
-				}
+				velocity.x = maxVelocity * (slope / (slope + 1));
 			} else if (dX < 0) {
-				if (dY >= 0) {
-					vel.x = -maxVelocity * (slope / (slope + 1));
-					vel.y = maxVelocity * (1 / (slope + 1));
-				}
-				if (dY < 0) {
-					vel.x = -maxVelocity * (slope / (slope + 1));
-					vel.y = -maxVelocity * (1 / (slope + 1));
-				}
+				velocity.x = -maxVelocity * (slope / (slope + 1));
 			}
-			solidBody.setLinearVelocity(vel);
+			if (dY > 0) {
+				velocity.y = maxVelocity * (1 / (slope + 1));
+			} else if (dY < 0) {
+				velocity.y = -maxVelocity * (1 / (slope + 1));
+			}
 		}
+		return velocity;
 	}
 	
 	/**
@@ -214,78 +213,31 @@ public class MEnemy {
 	}
 	*/
 	
-	public void setHealth(final float health) {
-		this.health = health;
-	}
 	
 	public float getHealth() {
 		return health;
 	}
-	
-	public void multHealth(final float mult) {
-		health *= mult;
-	}
-	
-	public float getBodyDamage() {
-		return bodyDamage;
-	}
-	
+
+	/*
 	public boolean setDeletable() {
-		//purgeProjectiles();
+		purgeProjectiles();
 		solidBody.setUserData("deletable");
 		return false;
 	}
+	*/
 	
-	public void multMaxVelocity(final float mult) {
-		maxVelocity *= mult;
+	/*
+	public ArrayList<EnemyProjectile> getProjectiles() {
+		return projectiles;
 	}
+	*/
 	
-	//public ArrayList<EnemyProjectile> getProjectiles() {
-		//return projectiles;
-	//}
-	
-	/**
-	 * Returns physical body.
-	 * @return Enemy's physical body
-	 */
-	public Body getBody() {
-		return solidBody;
-	}
-	
-	public Circle getShapeBody() {
-		return body;
-	}
-	
-	/**
-	 * Returns body fixture.
-	 * @return Enemy's body fixture
-	 */
-	public Fixture getFixture() {
-		return fixture;
-	}
-	
-	public void setBodyDamage(final float damage) {
-		bodyDamage = damage;
-	}
-	
-	/**
-	 * Sets body's maximum velocity.
-	 * @param v velocity
-	 */
-	public void setMaxVelocity(final float v) {
-		maxVelocity = v;
-	}
-	
-	public void setPosition(final Vector2 pos) {
-		position = pos;
+	public void setVelocity(Vector2 v) {
+		velocity = v;
 	}
 	
 	public void incAccumulator(final float dt) {
 		accumulator += dt;
-	}
-	
-	public void setBulletDamage(final int d) {
-		bulletDamage = d;
 	}
 	
 	/**
@@ -319,22 +271,5 @@ public class MEnemy {
 	public float getPlayerY() {
 		return playerY;
 	}
-	
-	/**
-	 * Returns body's horizontal position.
-	 * @return physical body's X.
-	 */
-	public float getX() {
-		return getBody().getPosition().x;
-	}
-	
-	/**
-	 * Returns body's vertical position.
-	 * @return physical body's Y.
-	 */
-	public float getY() {
-		return getBody().getPosition().y;
-	}
-	
-}
 
+}

@@ -19,11 +19,8 @@ public class Spitter extends Enemy {
 	
 	@Override
 	public void update(final float x, final float y) {
-		setPlayerX(x);
-		setPlayerY(y);
-		getShapeBody().setPosition(getBody().getPosition());
-		setPosition(getBody().getPosition());
-		incAccumulator(GameEngine.getDeltaTime());
+		super.update(x, y);
+		//getShapeBody().setPosition(getBody().getPosition());
 		spitAccumulator += GameEngine.getDeltaTime();
 		manageProjectiles(GameEngine.getDeltaTime());
 		

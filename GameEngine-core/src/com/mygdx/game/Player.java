@@ -168,22 +168,6 @@ public class Player {
 	}
 	
 	/**
-	 * Applies vertical acceleration to a body.
-	 * @param direction acceleration greater or less than zero.
-	 */
-	public void moveVertical(final float direction) {
-		//solidBody.applyForceToCenter(0, direction, true);
-	}
-	
-	/**
-	 * Applies horizontal acceleration to a body.
-	 * @param direction acceleration greater or less than zero.
-	 */
-	public void moveHorizontal(final float direction) {
-		//solidBody.applyForceToCenter(direction, 0, true);
-	}
-	
-	/**
 	 * For every render, detects if directional velocity is greater than
 	 * the maximum velocity and sets it at the max.
 	 * 

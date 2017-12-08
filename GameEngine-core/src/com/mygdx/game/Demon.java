@@ -43,13 +43,9 @@ public class Demon extends Enemy {
 	
 	@Override
 	public void update(final float x, final float y) {
-		setPlayerX(x);
-		setPlayerY(y);
-		getShapeBody().setPosition(getBody().getPosition());
-		setPosition(getBody().getPosition());
+		super.update(x, y);
 		
 		deltaTime = GameEngine.getDeltaTime();
-		incAccumulator(GameEngine.getDeltaTime());
 		spitAccumulator += deltaTime;
 		chargeAccumulator += deltaTime;
 		manageProjectiles(deltaTime);
@@ -87,10 +83,10 @@ public class Demon extends Enemy {
 		if (preChargeAccumulator >= (preChargeTime - (multiplier * 0.1f))) { // charge
 			setMaxVelocity(200 * (multiplier + (multiplier * 0.4f)));
 			if (multiplier >= 1.4f) {
-				calculateVelocity();
+				getBody().setLinearVelocity(calculateVelocity());
 			}
 			if (!charged) {
-				calculateVelocity();
+				getBody().setLinearVelocity(calculateVelocity());
 				charged = true;
 			}
 		}
@@ -110,7 +106,7 @@ public class Demon extends Enemy {
 			spitInterval = 0.5f;
 		}
 		if (getHealth() <= initialHealth * 0.5f && !charging) {
-			calculateVelocity();
+			getBody().setLinearVelocity(calculateVelocity());
 		}
 		if (getHealth() <= initialHealth * 0.35f && chargeAccumulator >= chargeTime) {
 			charging = true;

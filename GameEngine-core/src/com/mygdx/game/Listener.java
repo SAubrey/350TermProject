@@ -98,7 +98,7 @@ public class Listener implements ContactListener {
 				a = (Demon) contact.getFixtureA().getUserData();
 			}
 			Player b = (Player) contact.getFixtureB().getUserData();
-			a.pushAway();
+			a.applyImpulse(a.pushAway());
 			b.takeDamage(a.getBodyDamage());
 			gE.flashRed();
 		} else if (A.equals("player") 
@@ -112,7 +112,7 @@ public class Listener implements ContactListener {
 				b = (Demon) contact.getFixtureB().getUserData();
 			}
 			Player a = (Player) contact.getFixtureA().getUserData();
-			b.pushAway();
+			b.applyImpulse(b.pushAway());
 			a.takeDamage(b.getBodyDamage());
 			gE.flashRed();
 			//send inverted impulse to enemy

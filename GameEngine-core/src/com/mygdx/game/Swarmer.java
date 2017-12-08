@@ -15,10 +15,7 @@ public class Swarmer extends Enemy {
 	
 	@Override
 	public void update(final float x, final float y) {
-		setPlayerX(x);
-		setPlayerY(y);
-		incAccumulator(GameEngine.getDeltaTime());
-		setPosition(getBody().getPosition());
-		calculateVelocity();
+		super.update(x, y);
+		getBody().setLinearVelocity(calculateVelocity());
 	}
 }

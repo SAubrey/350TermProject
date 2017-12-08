@@ -8,6 +8,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.World;
 
 /**
  * Projectile class creates its own body and calculates 
@@ -78,15 +79,16 @@ public class MProjectile {
 	 * @param sourceX Projectile's source x position.
 	 * @param sourceY Projectile's source y position.
 	 */
+	/*
 	public void buildBody(final float sourceX, final float sourceY) {
 		body = new Circle();
 		bodyDef = new BodyDef();
 		bodyDef.type = BodyType.DynamicBody;
 		vec = new Vector2(determineQuadrant());
 		bodyDef.position.set(sourceX + vec.x, sourceY + vec.y);
-		//solidBody = GameEngine.getWorld().createBody(bodyDef);
+		solidBody = new World(new Vector2(0, 0), true).createBody(bodyDef);
 		circle = new CircleShape();
-		//circle.setRadius(GameEngine.getProjRadius());
+		circle.setRadius(2);
 		
 		fixtureDef = new FixtureDef();
 		fixtureDef.shape = circle;
@@ -95,6 +97,8 @@ public class MProjectile {
 		fixtureDef.restitution = 0.8f; // bounciness
 		fixture = solidBody.createFixture(fixtureDef);
 	}
+	*/
+	
 
 	/**
 	 * Takes the differences in X and Y between the cursor click location and the player
@@ -107,21 +111,14 @@ public class MProjectile {
 		Vector2 vel = new Vector2();
 		float slope = Math.abs(dX / dY);
 		if (dX > 0) {
-			if (dY > 0) {
-				vel.x = maxVelocity * (slope / (slope + 1));
-				vel.y = maxVelocity * (1 / (slope + 1));
-			} else if (dY < 0) {
-				vel.x = maxVelocity * (slope / (slope + 1));
-				vel.y = -maxVelocity * (1 / (slope + 1));
-			}
+			vel.x = maxVelocity * (slope / (slope + 1));
 		} else if (dX < 0) {
-			if (dY > 0) {
-				vel.x = -maxVelocity * (slope / (slope + 1));
-				vel.y = maxVelocity * (1 / (slope + 1));
-			} else if (dY < 0) {
-				vel.x = -maxVelocity * (slope / (slope + 1));
-				vel.y = -maxVelocity * (1 / (slope + 1));
-			}
+			vel.x = -maxVelocity * (slope / (slope + 1));
+		}
+		if (dY > 0) {
+			vel.y = maxVelocity * (1 / (slope + 1));
+		} else if (dY < 0) {
+			vel.y = -maxVelocity * (1 / (slope + 1));
 		}
 		return vel;
 	}
@@ -136,88 +133,15 @@ public class MProjectile {
 		Vector2 quad = new Vector2();
 		if (dX > 0) {
 			quad.x = displacement;
-			if (dY > 0) {
-				quad.y = displacement;
-			} else if (dY < 0) {
-				quad.y = -displacement;
-			}
 		} else if (dX < 0) {
 			quad.x = -displacement;
-			if (dY > 0) {
-				quad.y = displacement;
-			} else if (dY < 0) {
-				quad.y = -displacement;
-			}
+		}
+		if (dY > 0) {
+			quad.y = displacement;
+		} else if (dY < 0) {
+			quad.y = -displacement;
 		}
 		return quad;
-	}
-	
-	/**
-	 * Sets graphical object's position to a physical body's position.
-	 */
-	public void setPos() {
-		body.setPosition(solidBody.getPosition());
-	}
-	
-	/**
-	 * Accumulates time until the despawn time is reached.
-	 * @param time difference between frames.
-	 * @return true if the projectile has been set for deletion
-	 */
-	public boolean deletable(final float time) {
-		accumulator += time;
-		if (accumulator >= despawnTime) {
-			solidBody.setUserData("deletable");
-			return true;
-		}
-		return false;
-	}
-	
-	/**
-	 * Sets accumulated time to its despawn time.
-	 */
-	public void setDeletable() {
-		accumulator = despawnTime;
-	}
-	
-	/**
-	 * Sets body's maximum velocity.
-	 * @param v velocity
-	 */
-	public void setMaxVelocity(final int v) {
-		maxVelocity = v;
-	}
-	
-	/**
-	 * Sets difference in Y between source and target.
-	 * @param dY deltaY
-	 */
-	public void setDeltaY(final float dY) {
-		this.dY = dY;
-	}
-	
-	/**
-	 * Returns physical body.
-	 * @return projectile's physical body
-	 */
-	public Body getBody() {
-		return solidBody;
-	}
-	
-	/**
-	 * Returns body fixture.
-	 * @return projectile's body fixture
-	 */
-	public Fixture getFixture() {
-		return fixture;
-	}
-	
-	/**
-	 * Returns projectile contact damage.
-	 * @return damage bullet's damage
-	 */
-	public float getBulletDamage() {
-		return damage;
 	}
 }
 

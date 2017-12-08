@@ -42,6 +42,8 @@ public class Enemy {
 	/** */
 	private Vector2 position;
 	
+	private Vector2 velocity;
+	
 	/** All projectiles fired from Enemy. */
 	private ArrayList<EnemyProjectile> projectiles;
 	
@@ -70,6 +72,7 @@ public class Enemy {
 	 */
 	public Enemy(final float spawnX, final float spawnY) {
 		position = new Vector2(spawnX, spawnY);
+		velocity = new Vector2();
 		accumulator = 1.0f;
 		projectiles = new ArrayList<EnemyProjectile>();
 	}
@@ -106,63 +109,63 @@ public class Enemy {
 	 * @param y
 	 */
 	public void update(final float x, final float y) {
-		playerX = x;
-		playerY = y;
+		setPlayerX(x);
+		setPlayerY(y);
+		updatePos();
+		updateVel();
 		accumulator += GameEngine.getDeltaTime();
 	}
+
+	public void updatePos() {
+		position.set(getBody().getPosition());
+	}
 	
-	public void pushAway() {
-		float x = solidBody.getLinearVelocity().x;
-		float y = solidBody.getLinearVelocity().y;
+	public void updateVel() {
+		velocity.set(getBody().getLinearVelocity());
+	}
+	
+	public Vector2 pushAway() {
+		Vector2 vec =  new Vector2();
+		float x = velocity.x;
+		float y = velocity.y;
 		accumulator = 0;
 		float xBurst = 90f;
 		float yBurst = 90f;
 		if (x > 0) {
-			x = -xBurst;
-			if (y > 0) {
-				y = -yBurst;
-			} else if (y < 0) {
-				y = yBurst;
-			}
-		} else if (x <= 0) {
-			x = xBurst;
-			if (y > 0) {
-				y = -yBurst;
-			} else if (y <= 0) {
-				y = yBurst;
-			}
+			vec.x = -xBurst;
+		} else if (x < 0) {
+			vec.x = xBurst;
 		}
-		solidBody.applyLinearImpulse(x, y, 0, 0, true);
+		if (y > 0) {
+			vec.y = -yBurst;
+		} else if (y < 0) {
+			vec.y = yBurst;
+		}
+		return vec;
 	}
 	
-	public void calculateVelocity() {
+	public void applyImpulse(Vector2 v) {
+		solidBody.applyLinearImpulse(v.x, v.y, 0, 0, true);
+	}
+	
+	public Vector2 calculateVelocity() {
 		if (accumulator > 1.0f) {
-			Vector2 vel = new Vector2();
 			float dX, dY, slope;
 			dX = playerX - position.x;
 			dY = playerY - position.y;
 			slope = Math.abs(dX / dY);
 			if (dX > 0) {
-				if (dY >= 0) {
-					vel.x = maxVelocity * (slope / (slope + 1));
-					vel.y = maxVelocity * (1 / (slope + 1));
-				}
-				if (dY < 0) {
-					vel.x = maxVelocity * (slope / (slope + 1));
-					vel.y = -maxVelocity * (1 / (slope + 1));
-				}
+				velocity.x = maxVelocity * (slope / (slope + 1));
 			} else if (dX < 0) {
-				if (dY >= 0) {
-					vel.x = -maxVelocity * (slope / (slope + 1));
-					vel.y = maxVelocity * (1 / (slope + 1));
-				}
-				if (dY < 0) {
-					vel.x = -maxVelocity * (slope / (slope + 1));
-					vel.y = -maxVelocity * (1 / (slope + 1));
-				}
+				velocity.x = -maxVelocity * (slope / (slope + 1));
 			}
-			solidBody.setLinearVelocity(vel);
+			if (dY >= 0) {
+				velocity.y = maxVelocity * (1 / (slope + 1));
+			} else if (dY < 0) {
+				velocity.y = -maxVelocity * (1 / (slope + 1));
+			}
 		}
+		return velocity;
 	}
 	
 	/**
