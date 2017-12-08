@@ -1,52 +1,53 @@
 package com.mygdx.game; 
 
 /**
- * 
+ * Big red boss monster, fires in rapid bursts of 3 projectiles, 
+ * chases the player and then periodically charges towards the player.
  * @author Sean Aubrey, Gabriel Fountain, Brandon Conn
  *
  */
 public class Demon extends Enemy {
 	
-	/**   */
+	/**  Duration between game frames. */
 	private float deltaTime;
 	
-	/**   */
+	/** Time between firing projectiles.  */
 	private float spitAccumulator;
 	
-	/**   */
+	/** Time between charges.  */
 	private float chargeAccumulator;
 	
-	/**   */
+	/**  Time before charge. */
 	private float preChargeAccumulator;
 	
-	/**   */
+	/** True if in the process of charging.  */
 	private boolean charging = false;
 	
-	/**   */
+	/** True if the demon has charged.  */
 	private boolean charged = false;
 	
-	/**   */
+	/**  Time duration between firing projectiles. */
 	private float spitInterval = 1.0f;
 	
-	/**   */
+	/**  Time before next charge. */
 	private float chargeTime = 5.0f;
 	
-	/**   */
+	/**  Time demon is stationary before a charge. */
 	private float preChargeTime = 0.6f;
 	
-	/**   */
+	/** Time when a charge ends. */
 	private float endChargeTime;
 	
-	/**   */
+	/** Quantity other values are scaled by.  */
 	private float multiplier;
 	
-	/**   */
+	/** Health at start.  */
 	private float initialHealth;
 	
 	/**
-	 * 
-	 * @param spawnX
-	 * @param spawnY
+	 * Demon sets object specific variables then uses parent class for creation.
+	 * @param spawnX X spawn coordinate
+	 * @param spawnY Y spawn coordinate
 	 */
 	public Demon(final float spawnX, final float spawnY) {
 		super(spawnX, spawnY);
@@ -65,9 +66,9 @@ public class Demon extends Enemy {
 	
 	/**
 	 * 
-	 * 
-	 * @param x
-	 * @param y
+	 * Updates.
+	 * @param x player's x coordinate
+	 * @param y player's y coordinate
 	 */
 	@Override
 	public void update(final float x, final float y) {
@@ -82,7 +83,8 @@ public class Demon extends Enemy {
 	}
 	
 	/**
-	 * 
+	 * Fire projectiles if the time has come and the 
+	 * demon isn't charging.
 	 */
 	private void checkFire() {
 		if (spitAccumulator >= spitInterval && !charging) {
@@ -92,7 +94,7 @@ public class Demon extends Enemy {
 	}
 	
 	/**
-	 * 
+	 * Shoot three projectiles in slightly offset directions.
 	 */
 	private void standardFire() {
 		spit(getPlayerX(), getPlayerY() + 20);
@@ -158,7 +160,7 @@ public class Demon extends Enemy {
 	
 	/**
 	 * 
-	 * @param mult
+	 * @param mult multiplier
 	 */
 	public void setMultiplier(final float mult) {
 		multiplier = mult;

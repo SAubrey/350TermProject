@@ -80,70 +80,10 @@ public class MPlayer {
 	 * 
 	 */
 	public MPlayer() {
-		/*
-		body = new Circle();
-		bodyDef = new BodyDef();
-		bodyDef.type = BodyType.DynamicBody;
-		//bodyDef.position.set(viewportWidth / 2, viewportHeight / 2);
-		//solidBody = GameEngine.getWorld().createBody(bodyDef);
-		//solidBody.setUserData("player"); //user data is any data type, for any purpose
-		circle = new CircleShape();
-		//circle.setRadius(playerRadius);
-		
-		fixtureDef = new FixtureDef();
-		fixtureDef.shape = circle;
-		fixtureDef.density = 0.15f; 
-		fixtureDef.friction = 0.4f;
-		fixtureDef.restitution = 0.8f; // bounciness
-		
-		fixture = solidBody.createFixture(fixtureDef);
-		fixture.setUserData(this);
-		projectiles = new ArrayList<PlayerProjectile>();
-		*/
+
 	}
 	
-	/**
-	 * Creates a new Projectile object and gives it the Player's 
-	 * position and the cursor coordinates to which it will be directed.
-	 * @param mouseX the horizontal pixel position.
-	 * @param mouseY the vertical pixel position.
-	 */
-	/*
-	public void fireProjectile(final float mouseX, final float mouseY) {
-			PlayerProjectile p = new PlayerProjectile(getX(), getY(), mouseX, mouseY, bulletDamage);
-			projectiles.add(p);
-	}
 	
-	public void fireShotgun(final float mouseX, final float mouseY)  {
-		PlayerProjectile a = new PlayerProjectile(getX(), getY(), mouseX, mouseY, bulletDamage);
-		projectiles.add(a);
-		PlayerProjectile b = new PlayerProjectile(getX(), getY(), mouseX + 10, mouseY + 10, bulletDamage);
-		projectiles.add(b);
-		PlayerProjectile c = new PlayerProjectile(getX(), getY(), mouseX + 4, mouseY + 4, bulletDamage);
-		projectiles.add(c);
-		PlayerProjectile d = new PlayerProjectile(getX(), getY(), mouseX - 4, mouseY - 4, bulletDamage);
-		projectiles.add(d);
-		PlayerProjectile e = new PlayerProjectile(getX(), getY(), mouseX - 10, mouseY - 10, bulletDamage);
-		projectiles.add(e);
-	}
-	*/
-	
-	/**
-	 * Collects each projectile fired from the Player that can be deleted
-	 * and returns this to GameEngine.
-	 * @param time time between frames.
-	 */
-	/*
-	public void manageProjectiles(final float time) {
-		if (!projectiles.isEmpty()) {
-			for (int i = 0; i < projectiles.size(); i++) {
-				if (projectiles.get(i).deletable(time)) { 
-					projectiles.remove(i);
-				}
-			}
-		}
-	}
-	*/
 	
 	/**
 	 * 
@@ -225,28 +165,6 @@ public class MPlayer {
 		}
 		return force;
 	}
-	
-	/**
-	 * Sets graphical object's position to a physical body's position.
-	 */
-	/*
-	public void setPos() {
-		body.setPosition(solidBody.getPosition());
-	}
-	
-	/**
-	 * Returns body's horizontal position.
-	 * @return physical body's X.
-	 */
-	/*
-	public float getX() {
-		return body.x;
-	}
-	
-	
-	public float getY() {
-		return body.y;
-	} */
 	
 	
 	public void takeDamage(final float damage) {

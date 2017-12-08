@@ -20,7 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 
 /**
- * 
+ * Screen view when ESC is pressed during gameplay.
  * @author Sean Aubrey, Gabriel Fountain, Brandon Conn
  */
 public class PauseScreen extends ScreenAdapter {
@@ -66,8 +66,8 @@ public class PauseScreen extends ScreenAdapter {
 
 	/**
 	 * 
-	 * @param screenManager
-	 * @param gE
+	 * @param screenManager screenManager
+	 * @param gE GameEngine
 	 */
 	public PauseScreen(final ScreenManager screenManager, final GameEngine gE) {
 		this.sM = screenManager;
@@ -133,7 +133,7 @@ public class PauseScreen extends ScreenAdapter {
 	
 	/**
 	 * 
-	 * @param delta
+	 * @param delta detaTime
 	 */
 	@Override
 	public void render(final float delta) {

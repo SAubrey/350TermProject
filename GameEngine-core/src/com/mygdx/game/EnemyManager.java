@@ -226,7 +226,7 @@ public class EnemyManager {
 	 * 
 	 * @param spawnX Proposed x spawn coordinate
 	 * @param spawnY Proposed y spawn coordinate
-	 * @return 
+	 * @return true if overlap
 	 */
 	private boolean checkOverlap(final int spawnX, final int spawnY) {
 		world.getBodies(bodies);

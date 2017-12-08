@@ -12,7 +12,7 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 
 /**
- * Enemy class acts as the parent class for all Enemy children
+ * Enemy class acts as the parent class for all Enemy children.
  * 
  * @author Sean Aubrey, Gabriel Fountain, Brandon Conn
  */
@@ -39,9 +39,9 @@ public class Enemy {
 	/** Attaches a physical body to its qualities. */
 	private Fixture fixture;
 	
-	/** */
+	/** position. */
 	private Vector2 position;
-	
+	/** velocity. */
 	private Vector2 velocity;
 	
 	/** All projectiles fired from Enemy. */
@@ -53,22 +53,22 @@ public class Enemy {
 	/**  Player's Y position.*/
 	private float playerY;
 	
-	/** */
+	/** Enemy health. */
 	private float health;
 	
-	/** */
+	/** Damage inflicted on touch. */
 	private float bodyDamage;
 	
-	/** */
+	/** Time accumulator. */
 	private float accumulator;
 	
-	/** */
+	/** Damage inflicted by projectiles. */
 	private int bulletDamage;
 	
 	/**
 	 * 
-	 * @param spawnX
-	 * @param spawnY
+	 * @param spawnX X spawn coordinate
+	 * @param spawnY Y spawn coordinate
 	 */
 	public Enemy(final float spawnX, final float spawnY) {
 		position = new Vector2(spawnX, spawnY);
@@ -78,12 +78,12 @@ public class Enemy {
 	}
 	
 	/**
-	 * 
-	 * @param spawnX
-	 * @param spawnY
-	 * @param radius
-	 * @param density
-	 * @param restitution
+	 * Constructs a physical body in the world.
+	 * @param spawnX X spawn coordinate
+	 * @param spawnY Y spawn coordinate
+	 * @param radius radius of body
+	 * @param density density of body
+	 * @param restitution bounciness of body
 	 */
 	public void buildBody(final float spawnX, final float spawnY, final float radius,
 			final float density, final float restitution) {
@@ -104,9 +104,9 @@ public class Enemy {
 	}
 	
 	/**
-	 * 
-	 * @param x
-	 * @param y
+	 * Updates all necessary generic enemy values.
+	 * @param x player's x coordinate
+	 * @param y player's y coordinate
 	 */
 	public void update(final float x, final float y) {
 		setPlayerX(x);
@@ -116,14 +116,25 @@ public class Enemy {
 		accumulator += GameEngine.getDeltaTime();
 	}
 
+	/**
+	 * Sets position.
+	 */
 	public void updatePos() {
 		position.set(getBody().getPosition());
 	}
 	
+	/**
+	 * Sets current velocity.
+	 */
 	public void updateVel() {
 		velocity.set(getBody().getLinearVelocity());
 	}
 	
+	/**
+	 * Used when in contact with player, this sends an enemy
+	 * flying in the opposite direction it approached the player.
+	 * @return vec
+	 */
 	public Vector2 pushAway() {
 		Vector2 vec =  new Vector2();
 		float x = velocity.x;
@@ -145,12 +156,17 @@ public class Enemy {
 	}
 	
 
-	public void applyImpulse(Vector2 v) {
+	/**
+	 * Applies impulse to body. Used in conjunction with pushAway().
+	 * @param v velocity
+	 */
+	public void applyImpulse(final Vector2 v) {
 		solidBody.applyLinearImpulse(v.x, v.y, 0, 0, true);
 	}
 
 	/**
-	 * 
+	 * Calculates and returns x and y velocity, aiming towards the player.
+	 * @return velocity
 	 */
 	public Vector2 calculateVelocity() {
 		if (accumulator > 1.0f) {
@@ -199,9 +215,9 @@ public class Enemy {
 	}
 	
 	/**
-	 * 
-	 * @param damage
-	 * @return
+	 * Reduces health of enemy.
+	 * @param damage damage inflicted upon enemy.
+	 * @return boolean
 	 */
 	public boolean takeDamage(final float damage) {
 		health -= damage;
@@ -221,40 +237,40 @@ public class Enemy {
 	}
 	
 	/**
-	 * 
-	 * @param health
+	 * Sets health.
+	 * @param health enemy health
 	 */
 	public void setHealth(final float health) {
 		this.health = health;
 	}
 	
 	/**
-	 * 
-	 * @return
+	 * Returns health.
+	 * @return health
 	 */
 	public float getHealth() {
 		return health;
 	}
 	
 	/**
-	 * 
-	 * @param mult
+	 * Multiplies health by multiplier.
+	 * @param mult multiplier
 	 */
 	public void multHealth(final float mult) {
 		health *= mult;
 	}
 	
 	/**
-	 * 
-	 * @return
+	 * Returns amount of body damage is inflicted.
+	 * @return bodyDamage
 	 */
 	public float getBodyDamage() {
 		return bodyDamage;
 	}
 	
 	/**
-	 * 
-	 * @return
+	 * Empties the enemy's array of projectiles and marks the body for deletion.
+	 * @return false
 	 */
 	public boolean setDeletable() {
 		purgeProjectiles();
@@ -263,16 +279,16 @@ public class Enemy {
 	}
 	
 	/**
-	 * 
-	 * @param mult
+	 * Multiplies max velocity.
+	 * @param mult multiplier
 	 */
 	public void multMaxVelocity(final float mult) {
 		maxVelocity *= mult;
 	}
 	
 	/**
-	 * 
-	 * @return
+	 * Returns list of projectiles.
+	 * @return projectiles
 	 */
 	public ArrayList<EnemyProjectile> getProjectiles() {
 		return projectiles;
@@ -287,8 +303,8 @@ public class Enemy {
 	}
 	
 	/**
-	 * 
-	 * @return
+	 * Returns the shape of the body.
+	 * @return body
 	 */
 	public Circle getShapeBody() {
 		return body;
@@ -303,8 +319,8 @@ public class Enemy {
 	}
 	
 	/**
-	 * 
-	 * @param damage
+	 * Sets the body damage.
+	 * @param damage damage
 	 */
 	public void setBodyDamage(final float damage) {
 		bodyDamage = damage;
@@ -319,24 +335,24 @@ public class Enemy {
 	}
 	
 	/**
-	 * 
-	 * @param pos
+	 * Sets coordinates.
+	 * @param pos position
 	 */
 	public void setPosition(final Vector2 pos) {
 		position = pos;
 	}
 	
 	/**
-	 * 
-	 * @param dt
+	 * Increases accumulator of delta.
+	 * @param dt delta time
 	 */
 	public void incAccumulator(final float dt) {
 		accumulator += dt;
 	}
 	
 	/**
-	 * 
-	 * @param d
+	 * Sets bullet damage.
+	 * @param d damage
 	 */
 	public void setBulletDamage(final int d) {
 		bulletDamage = d;

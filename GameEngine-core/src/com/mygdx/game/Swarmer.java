@@ -1,15 +1,15 @@
 package com.mygdx.game;
  
 /**
- * 
+ * Mobile enemy that chases the player.
  * @author Sean Aubrey, Gabriel Fountain, Brandon Conn
  */
 public class Swarmer extends Enemy {
 	
 	/**
 	 * 
-	 * @param spawnX
-	 * @param spawnY
+	 * @param spawnX spawn X coordinate
+	 * @param spawnY spawn Y coordinate
 	 */
 	public Swarmer(final float spawnX, final float spawnY) {
 		super(spawnX, spawnY);
@@ -24,8 +24,8 @@ public class Swarmer extends Enemy {
 	
 	/**
 	 * 
-	 * @param x
-	 * @param y
+	 * @param x x coordinate
+	 * @param y y coordinate
 	 */
 	@Override
 	public void update(final float x, final float y) {

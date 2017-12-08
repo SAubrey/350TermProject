@@ -1,7 +1,7 @@
 package com.mygdx.game; 
 
 /**
- * Subclass of Projectile.
+ * Subclass of Projectile. Fired from the player.
  * 
  * @author Sean Aubrey, Gabriel Fountain, Brandon Conn
  */

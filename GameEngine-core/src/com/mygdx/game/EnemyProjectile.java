@@ -5,7 +5,6 @@ package com.mygdx.game;
  * 
  * @author Sean Aubrey, Gabriel Fountain, Brandon Conn
  */
-
 public class EnemyProjectile extends Projectile {
 	
 	/**

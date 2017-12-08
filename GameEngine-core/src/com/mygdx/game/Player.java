@@ -35,8 +35,8 @@ public class Player {
 	/**  Applied acceleration upon movement in m/s^2.*/
 	private float playerAcceleration = 30.0f; //30->79
 	
-	/** Amount of damage Player can take */
-	private float health = 100f;//100->1000
+	/** Amount of damage Player can take. */
+	private float health = 100f; // 100->1000
 	
 	/** Amount of damage of Player projectiles. */
 	private float bulletDamage = 10f;
@@ -48,7 +48,7 @@ public class Player {
 	private int score;
 	
 	/**  Time between shots in seconds.*/
-	private float shotTime = 0.8f; //0.8->0.05
+	private float shotTime = 0.2f; //0.8->0.05
 	
 	/**  Time between shots in seconds.*/
 	private float shotgunTime = 1.0f; //1.0->0.05
@@ -98,6 +98,14 @@ public class Player {
 		projectiles = new ArrayList<PlayerProjectile>();
 	}
 	
+	/**
+	 * Player update function.
+	 * @param right D
+	 * @param left A
+	 * @param up W
+	 * @param down S
+	 * @param dT deltaTime
+	 */
 	public void update(final boolean right, final boolean left, 
 			final boolean up, final boolean down, final float dT) {
 		setPos();
@@ -114,25 +122,31 @@ public class Player {
 	 * @param mouseY the vertical pixel position.
 	 */
 	public void fireProjectile(final float mouseX, final float mouseY) {
-			PlayerProjectile p = new PlayerProjectile(getX(), getY(), mouseX, mouseY, bulletDamage);
+			PlayerProjectile p = new PlayerProjectile(
+					getX(), getY(), mouseX, mouseY, bulletDamage);
 			projectiles.add(p);
 	}
 	
 	/**
 	 * 
-	 * @param mouseX
-	 * @param mouseY
+	 * @param mouseX mouse X coordinate
+	 * @param mouseY mouse Y coordinate
 	 */
 	public void fireShotgun(final float mouseX, final float mouseY)  {
-		PlayerProjectile a = new PlayerProjectile(getX(), getY(), mouseX, mouseY, bulletDamage);
+		PlayerProjectile a = new PlayerProjectile(
+				getX(), getY(), mouseX, mouseY, bulletDamage);
 		projectiles.add(a);
-		PlayerProjectile b = new PlayerProjectile(getX(), getY(), mouseX + 10, mouseY + 10, bulletDamage);
+		PlayerProjectile b = new PlayerProjectile(
+				getX(), getY(), mouseX + 10, mouseY + 10, bulletDamage);
 		projectiles.add(b);
-		PlayerProjectile c = new PlayerProjectile(getX(), getY(), mouseX + 4, mouseY + 4, bulletDamage);
+		PlayerProjectile c = new PlayerProjectile(
+				getX(), getY(), mouseX + 4, mouseY + 4, bulletDamage);
 		projectiles.add(c);
-		PlayerProjectile d = new PlayerProjectile(getX(), getY(), mouseX - 4, mouseY - 4, bulletDamage);
+		PlayerProjectile d = new PlayerProjectile(
+				getX(), getY(), mouseX - 4, mouseY - 4, bulletDamage);
 		projectiles.add(d);
-		PlayerProjectile e = new PlayerProjectile(getX(), getY(), mouseX - 10, mouseY - 10, bulletDamage);
+		PlayerProjectile e = new PlayerProjectile(
+				getX(), getY(), mouseX - 10, mouseY - 10, bulletDamage);
 		projectiles.add(e);
 	}
 	
@@ -152,9 +166,12 @@ public class Player {
 	}
 	
 	/**
-	 * 
+	 * Imposes slow deacceleration upon the player to simulate natural
+	 * environmental resistances.
+	 * @param v velocity
+	 * @return vec
 	 */
-	private Vector2 simulateResistance(Vector2 v) {
+	private Vector2 simulateResistance(final Vector2 v) {
 		Vector2 vec = new  Vector2();
 		float xResistance = 1 + Math.abs(v.x / 5);
 		float yResistance = 1 + Math.abs(v.y / 5);
@@ -176,8 +193,10 @@ public class Player {
 	 * the maximum velocity and sets it at the max.
 	 * 
 	 * Check again maximum ratios of the max velocity given the current ratio of velocities
+	 * @param currentV current velocity
+	 * @return v
 	 */
-	private Vector2 velocityCap(Vector2 currentV) {
+	private Vector2 velocityCap(final Vector2 currentV) {
 		float xVelocity = currentV.x;
 		float yVelocity = currentV.y;
 		
@@ -204,11 +223,13 @@ public class Player {
 	 //all this really does is even out acceleration diagonally - not cap it
 
 	/**
-	 * 
-	 * @param right
-	 * @param left
-	 * @param up
-	 * @param down
+	 * Calculates force and direction required to move player according
+	 * to user input of WASD.
+	 * @param right D
+	 * @param left A
+	 * @param up W
+	 * @param down S
+	 * @return force
 	 */
 	private Vector2 move(final boolean right, final boolean left,
 			final boolean up, final boolean down) {
@@ -245,15 +266,27 @@ public class Player {
 		body.setPosition(solidBody.getPosition());
 	}
 	
+	/**
+	 * Returns body velocity.
+	 * @return velocity
+	 */
 	public Vector2 getVelocity() {
 		return solidBody.getLinearVelocity();
 	}
 	
-	public void setVelocity(Vector2 vel) {
+	/**
+	 * Sets body velocity.
+	 * @param vel velocity
+	 */
+	public void setVelocity(final Vector2 vel) {
 		solidBody.setLinearVelocity(vel);
 	}
 	
-	public void applyForce(Vector2 force) {
+	/**
+	 * Applies acceleration on body.
+	 * @param force force
+	 */
+	public void applyForce(final Vector2 force) {
 		solidBody.applyForceToCenter(force, true);
 	}
 	
@@ -274,23 +307,23 @@ public class Player {
 	}
 	
 	/**
-	 * 
-	 * @param damage
+	 * Decreases health by a positive quantity.
+	 * @param damage damage
 	 */
 	public void takeDamage(final float damage) {
 		health -= damage;
 	}
 	
 	/**
-	 * 
-	 * @return
+	 * Returns health.
+	 * @return health
 	 */
 	public float getHealth() {
 		return health;
 	}
 	
 	/**
-	 * 
+	 * Increases kill count and increments health.
 	 */
 	public void incrementKillCount() {
 		killCount++;
@@ -302,7 +335,7 @@ public class Player {
 	
 	/**
 	 * 
-	 * @return
+	 * @return killCount
 	 */
 	public int getKillCount() {
 		return killCount;
@@ -310,7 +343,7 @@ public class Player {
 	
 	/**
 	 * 
-	 * @return
+	 * @return shotTime
 	 */
 	public float getShotTime() {
 		return shotTime;
@@ -318,7 +351,7 @@ public class Player {
 	
 	/**
 	 * 
-	 * @return
+	 * @return shotgunTime
 	 */
 	public float getShotgunTime() {
 		return shotgunTime;
@@ -326,7 +359,7 @@ public class Player {
 	
 	/**
 	 * 
-	 * @return
+	 * @return score
 	 */
 	public int getScore() {
 		return score;
@@ -334,7 +367,7 @@ public class Player {
 	
 	/**
 	 * 
-	 * @param mult
+	 * @param mult multiplier
 	 */
 	public void multMovement(final float mult) {
 		maxVelocity *= mult;

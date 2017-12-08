@@ -1,7 +1,7 @@
 package com.mygdx.game; 
 
 /**
- * 
+ * Stationary enemy that fires projectiles towards the player.
  * @author Sean Aubrey, Gabriel Fountain, Brandon Conn
  */
 public class Spitter extends Enemy {
@@ -14,8 +14,8 @@ public class Spitter extends Enemy {
 	
 	/**
 	 * 
-	 * @param spawnX
-	 * @param spawnY
+	 * @param spawnX spawnX
+	 * @param spawnY spawnY
 	 */
 	public Spitter(final float spawnX, final float spawnY) {
 		super(spawnX, spawnY);
@@ -30,8 +30,8 @@ public class Spitter extends Enemy {
 	
 	/**
 	 * 
-	 * @param x
-	 * @param y
+	 * @param x x coordinate
+	 * @param y y coordinate
 	 */
 	@Override
 	public void update(final float x, final float y) {

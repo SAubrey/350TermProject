@@ -46,7 +46,6 @@ public class PlayerTest {
 	public void simulateResistance2() {
 		Vector2 v =  new Vector2(-10, 0);
 		float expX = 1 + Math.abs(v.x / 5);
-		float expY = 1 + Math.abs(v.y / 5);
 		assertTrue(p.simulateResistance(v).x == expX);
 		assertTrue(p.simulateResistance(v).y == 0);
 	}
@@ -54,7 +53,6 @@ public class PlayerTest {
 	@Test
 	public void simulateResistance3() {
 		Vector2 v =  new Vector2(0, -10);
-		float expX = 1 + Math.abs(v.x / 5);
 		float expY = 1 + Math.abs(v.y / 5);
 		assertTrue(p.simulateResistance(v).x == 0);
 		assertTrue(p.simulateResistance(v).y == expY);
@@ -62,13 +60,7 @@ public class PlayerTest {
 	
 	@Test
 	public void velocityCap1() {
-		float maxVelocity = 80f;
 		Vector2 v =  new Vector2(0, 0);
-		float sum = Math.abs(v.x) + Math.abs(v.y);
-		float xRat = v.x / sum;
-		float yRat = v.y / sum;
-		float xCap = Math.abs(xRat * maxVelocity);
-		float yCap = Math.abs(yRat * maxVelocity);
 		assertTrue(p.velocityCap(v).x == 0);
 		assertTrue(p.velocityCap(v).y == 0);
 	}
@@ -102,7 +94,6 @@ public class PlayerTest {
 	//MOVE
 	@Test
 	public void move1() {
-		float pA = p.getPlayerAcceleration();
 		Vector2 f =  new Vector2(0, 0);
 		f = p.move(false, false, false, false);
 		assertTrue(f.x == 0);

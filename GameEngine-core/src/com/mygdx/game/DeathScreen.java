@@ -20,7 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 
 /**
- * 
+ * Screen view when the player's health has reached 0.
  * 
  * @author Sean Aubrey, Gabriel Fountain, Brandon Conn
  */
@@ -67,8 +67,8 @@ public class DeathScreen extends ScreenAdapter {
 
 	/**
 	 * 
-	 * @param screenManager
-	 * @param gE
+	 * @param screenManager screenManager
+	 * @param gE GameEngine
 	 */
 	public DeathScreen(final ScreenManager screenManager, final GameEngine gE) {
 		this.sM = screenManager;
@@ -113,9 +113,7 @@ public class DeathScreen extends ScreenAdapter {
 		addListeners();
 	}
 	
-	/**
-	 * 
-	 */
+	
 	private void addListeners() {
 		play.addListener(new ChangeListener() {
 			public void changed(final ChangeEvent event, final Actor play) {
@@ -127,7 +125,7 @@ public class DeathScreen extends ScreenAdapter {
 		
 		quit.addListener(new ChangeListener() {
 			
-			/**   */
+			
 			public void changed(final ChangeEvent event, final Actor quit) {
 				gE.dispose();
 				Gdx.app.exit();
@@ -138,7 +136,7 @@ public class DeathScreen extends ScreenAdapter {
 	/**
 	 * 
 	 * 
-	 * @param delta
+	 * @param delta delta
 	 */
 	@Override
 	public void render(final float delta) {

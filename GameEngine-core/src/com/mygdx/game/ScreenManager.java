@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 /**
- * 
+ * Used to switch between different screens.
  * @author Sean Aubrey, Gabriel Fountain, Brandon Conn
  */
 public class ScreenManager extends Game {

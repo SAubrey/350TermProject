@@ -6,7 +6,8 @@ import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Manifold;
 
 /**
- * 
+ * Contact listener detecting the touching of all bodies
+ * in the game world.
  * @author Sean Aubrey, Gabriel Fountain, Brandon Conn
  */
 public class Listener implements ContactListener {
@@ -25,7 +26,7 @@ public class Listener implements ContactListener {
 	
 	/**
 	 * 
-	 * @param gE
+	 * @param gE GameEngine object
 	 */
 	Listener(final GameEngine gE) {
 		this.gE = gE;
@@ -33,9 +34,8 @@ public class Listener implements ContactListener {
 	
 	/**
 	 * 
-	 * @param contact
+	 * @param contact objects in contact
 	 */
-	//need to make sure spawning does not happen on top of another object
 	@Override
 	public void beginContact(final Contact contact) {
 		Object objA = contact.getFixtureA().getUserData();
@@ -151,30 +151,29 @@ public class Listener implements ContactListener {
 			a.setDeletable();
 			gE.flashRed();
 		}
-		//conditionals for enemy projectile and player
 	}
 
 	/**
-	 * 
-	 * @param contact
+	 * Unused.
+	 * @param contact contact
 	 */
 	@Override
 	public void endContact(final Contact contact) {
 	}
 
 	/**
-	 * 
-	 * @param contact
-	 * @param oldManifold
+	 * Unused.
+	 * @param contact contact
+	 * @param oldManifold oM
 	 */
 	@Override
 	public void preSolve(final Contact contact, final Manifold oldManifold) {
 	}
 
 	/**
-	 * 
-	 * @param contact
-	 * @param impulse
+	 * Unused.
+	 * @param contact contact
+	 * @param impulse impulse
 	 */
 	@Override
 	public void postSolve(final Contact contact, final ContactImpulse impulse) {

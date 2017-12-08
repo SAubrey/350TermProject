@@ -175,7 +175,7 @@ public class GameEngine extends ScreenAdapter {
 	 * Listens for user input.
 	 * Performs a physics step of the world.
 	 * 
-	 * @param delta
+	 * @param delta deltaTime
 	 */
 	@Override
 	public void render(final float delta) {
@@ -200,8 +200,8 @@ public class GameEngine extends ScreenAdapter {
 	}
 	
 	/**
-	 * 
-	 * @return
+	 * Returns Gdx frame time.
+	 * @return difference in time between frames.
 	 */
 	public static float getDeltaTime() {
 		return Gdx.graphics.getDeltaTime();
@@ -245,7 +245,9 @@ public class GameEngine extends ScreenAdapter {
 	}
 	
 	/**
-	 * 
+	 * Sets the flashRed bool to true in order to briefly
+	 * color the screen red to indicate that the player has taken
+	 * damage.
 	 */
 	public void flashRed() {
 		flashRed = true;
@@ -254,7 +256,8 @@ public class GameEngine extends ScreenAdapter {
 	/**
 	 * Updates a time accumulator with the time between frames
 	 * and tells Player to fire a projectile if the mouse button
-	 * clicked or held down.
+	 * clicked or held down, or shotgun projectiles if space is 
+	 * pressed. ESC pauses the game.
 	 */
 	private void checkClick() {
 		shotAccumulator += Gdx.graphics.getDeltaTime();
@@ -321,7 +324,8 @@ public class GameEngine extends ScreenAdapter {
 	}
 	
 	/**
-	 * 
+	 * Determines which directional keys are pressed, WASD, 
+	 * to update player movement.
 	 */
 	private void checkMovement() {
 		boolean right = false, left = false, up = false, down = false;
@@ -426,7 +430,7 @@ public class GameEngine extends ScreenAdapter {
 	}
 	
 	/**
-	 * 
+	 * Increments player's enemy kill count.
 	 */
 	public void incrementKillCount() {
 		player.incrementKillCount();
@@ -536,10 +540,6 @@ public class GameEngine extends ScreenAdapter {
 		return viewportWidth;
 	}
 	
-	public void setWorld(World world) {
-		GameEngine.world = world;
-	}
-	
 	/**
 	 * Certain assets should be disposed of manually before exiting the application.
 	 */
@@ -548,13 +548,12 @@ public class GameEngine extends ScreenAdapter {
 		sr.dispose();
 		world.dispose();
 		eMan = null;
-		//player = null;
 		xWallBox.dispose();
 		wallBox.dispose();
 	}
 	
 	/**
-	 * 
+	 * Sets the game state to Paused.
 	 */
 	@Override
 	public void pause() {
@@ -562,7 +561,7 @@ public class GameEngine extends ScreenAdapter {
 	}
 
 	/**
-	 * 
+	 * Sets the game state to Run.
 	 */
 	@Override
 	public void resume() {
@@ -570,7 +569,7 @@ public class GameEngine extends ScreenAdapter {
 	}
 	
 	/**
-	 * 
+	 * Sets the game state to Dead.
 	 */
 	public void dead() {
 		state = GameState.DEAD;

@@ -77,7 +77,7 @@ public class ProjectileTest {
 	
 	//dX < 0, dY < 0
 	@Test
-	public void determineQuadrant4() {
+	public void determineQuadrant2() {
 		Vector2 expected = new Vector2(-.1f, -.1f);
 		p = new MProjectile(2, 2, 1, 1, 10);
 		assertTrue(null, expected.x == p.determineQuadrant().x);
@@ -86,7 +86,7 @@ public class ProjectileTest {
 
 	//dX = 0, dY = 0
 	@Test
-	public void determineQuadrant7() {
+	public void determineQuadrant3() {
 		Vector2 expected = new Vector2(0, 0);
 		p = new MProjectile(0, 0, 0, 0, 10);
 		assertTrue(null, expected.x == p.determineQuadrant().x);

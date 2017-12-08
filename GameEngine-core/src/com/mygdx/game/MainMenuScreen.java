@@ -20,7 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 
 /**
- * 
+ * Screen view at startup.
  * @author Sean Aubrey, Gabriel Fountain, Brandon Conn
  */
 public class MainMenuScreen extends ScreenAdapter {
@@ -63,7 +63,7 @@ public class MainMenuScreen extends ScreenAdapter {
 
 	/**
 	 * 
-	 * @param screenManager
+	 * @param screenManager screenManager
 	 */
 	public MainMenuScreen(final ScreenManager screenManager) {
 		this.sM = screenManager;
@@ -128,7 +128,7 @@ public class MainMenuScreen extends ScreenAdapter {
 
 	/**
 	 * 
-	 * @param delta
+	 * @param delta deltaTime
 	 */
 	@Override
 	public void render(final float delta) {

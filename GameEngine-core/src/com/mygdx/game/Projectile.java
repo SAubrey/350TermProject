@@ -104,8 +104,8 @@ public class Projectile {
 	 * the Projectile's maximum velocity in order to angle the trajectory accurately.
 	 * Formula to determine X + Y velocities: BF(n) = B(n/(n+1)) + B(1/(n+1)),
 	 * where n is X/Y slope and B is max velocity.
+	 * @return vel velocity
 	 */
-		
 	public Vector2 calculateVelocity() {
 		Vector2 vel = new Vector2();
 		float slope = Math.abs(dX / dY);
