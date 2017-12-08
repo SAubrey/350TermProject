@@ -24,6 +24,6 @@ public class EnemyProjectile extends Projectile {
 		buildBody(sourceX, sourceY);
 		getBody().setUserData("enemyProj");
 		getFixture().setUserData(this);
-		calculateVelocity();
+		getBody().setLinearVelocity(calculateVelocity());
 	}
 }

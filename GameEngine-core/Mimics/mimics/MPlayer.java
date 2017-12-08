@@ -1,4 +1,4 @@
-package com.mygdx.game;
+package mimics;
 
 import java.util.ArrayList;
 
@@ -10,6 +10,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.mygdx.game.PlayerProjectile;
 
 /**
  * Player class instantiates once per play session. 
@@ -18,16 +19,16 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
  * to facilitate their deletion.
  * @author Sean Aubrey, Gabriel Fountain, Brandon Conn
  */
-public class Player {
+public class MPlayer {
 	
 	/** Circular player size in meters.*/
-	private float playerRadius = GameEngine.getPlayRadius();
+	private float playerRadius; //= GameEngine.getPlayRadius();
 	
 	/** Scaled Y value of the window. */
-	private float viewportHeight = GameEngine.getViewHeight();
+	private float viewportHeight; //= GameEngine.getViewHeight();
 	
 	/** Scaled X value of the window. */
-	private float viewportWidth = GameEngine.getViewWidth();
+	private float viewportWidth; //= GameEngine.getViewWidth();
 	
 	/** Velocity limit. */
 	private float maxVelocity = 80f;
@@ -78,15 +79,16 @@ public class Player {
 	/**
 	 * 
 	 */
-	public Player() {
+	public MPlayer() {
+		/*
 		body = new Circle();
 		bodyDef = new BodyDef();
 		bodyDef.type = BodyType.DynamicBody;
-		bodyDef.position.set(viewportWidth / 2, viewportHeight / 2);
-		solidBody = GameEngine.getWorld().createBody(bodyDef);
-		solidBody.setUserData("player"); //user data is any data type, for any purpose
+		//bodyDef.position.set(viewportWidth / 2, viewportHeight / 2);
+		//solidBody = GameEngine.getWorld().createBody(bodyDef);
+		//solidBody.setUserData("player"); //user data is any data type, for any purpose
 		circle = new CircleShape();
-		circle.setRadius(playerRadius);
+		//circle.setRadius(playerRadius);
 		
 		fixtureDef = new FixtureDef();
 		fixtureDef.shape = circle;
@@ -97,15 +99,7 @@ public class Player {
 		fixture = solidBody.createFixture(fixtureDef);
 		fixture.setUserData(this);
 		projectiles = new ArrayList<PlayerProjectile>();
-	}
-	
-	public void update(final boolean right, final boolean left, 
-			final boolean up, final boolean down, final float dT) {
-		setPos();
-		applyForce(move(right, left, up, down));
-		applyForce(simulateResistance(getVelocity()));
-		setVelocity(velocityCap(getVelocity()));
-		manageProjectiles(dT);
+		*/
 	}
 	
 	/**
@@ -114,6 +108,7 @@ public class Player {
 	 * @param mouseX the horizontal pixel position.
 	 * @param mouseY the vertical pixel position.
 	 */
+	/*
 	public void fireProjectile(final float mouseX, final float mouseY) {
 			PlayerProjectile p = new PlayerProjectile(getX(), getY(), mouseX, mouseY, bulletDamage);
 			projectiles.add(p);
@@ -131,12 +126,14 @@ public class Player {
 		PlayerProjectile e = new PlayerProjectile(getX(), getY(), mouseX - 10, mouseY - 10, bulletDamage);
 		projectiles.add(e);
 	}
+	*/
 	
 	/**
 	 * Collects each projectile fired from the Player that can be deleted
 	 * and returns this to GameEngine.
 	 * @param time time between frames.
 	 */
+	/*
 	public void manageProjectiles(final float time) {
 		if (!projectiles.isEmpty()) {
 			for (int i = 0; i < projectiles.size(); i++) {
@@ -146,12 +143,13 @@ public class Player {
 			}
 		}
 	}
+	*/
 	
 	/**
 	 * 
 	 */
-	private Vector2 simulateResistance(Vector2 v) {
-		Vector2 vec = new  Vector2();
+	public Vector2 simulateResistance(Vector2 v) {
+		Vector2 vec = new  Vector2(0, 0);
 		float xResistance = 1 + Math.abs(v.x / 5);
 		float yResistance = 1 + Math.abs(v.y / 5);
 		if (v.x < 0)  {
@@ -168,31 +166,15 @@ public class Player {
 	}
 	
 	/**
-	 * Applies vertical acceleration to a body.
-	 * @param direction acceleration greater or less than zero.
-	 */
-	public void moveVertical(final float direction) {
-		//solidBody.applyForceToCenter(0, direction, true);
-	}
-	
-	/**
-	 * Applies horizontal acceleration to a body.
-	 * @param direction acceleration greater or less than zero.
-	 */
-	public void moveHorizontal(final float direction) {
-		//solidBody.applyForceToCenter(direction, 0, true);
-	}
-	
-	/**
 	 * For every render, detects if directional velocity is greater than
 	 * the maximum velocity and sets it at the max.
 	 * 
 	 * Check again maximum ratios of the max velocity given the current ratio of velocities
 	 */
-	private Vector2 velocityCap(Vector2 currentV) {
+	public Vector2 velocityCap(Vector2 currentV) {
 		float xVelocity = currentV.x;
 		float yVelocity = currentV.y;
-		
+
 		float sum = Math.abs(xVelocity) + Math.abs(yVelocity);
 		float xRat = xVelocity / sum;
 		float yRat = yVelocity / sum;
@@ -216,7 +198,7 @@ public class Player {
 	 * Attempted fix of movement bugs. Almost works.
 	 * all this really does is even out acceleration diagonally - not cap it
 	 */
-	private Vector2 move(final boolean right, final boolean left,
+	public Vector2 move(final boolean right, final boolean left, 
 			final boolean up, final boolean down) {
 		Vector2 force = new Vector2();
 		float diagForce = (playerAcceleration * 2) / 3;
@@ -247,37 +229,25 @@ public class Player {
 	/**
 	 * Sets graphical object's position to a physical body's position.
 	 */
+	/*
 	public void setPos() {
 		body.setPosition(solidBody.getPosition());
-	}
-	
-	public Vector2 getVelocity() {
-		return solidBody.getLinearVelocity();
-	}
-	
-	public void setVelocity(Vector2 vel) {
-		solidBody.setLinearVelocity(vel);
-	}
-	
-	public void applyForce(Vector2 force) {
-		solidBody.applyForceToCenter(force, true);
 	}
 	
 	/**
 	 * Returns body's horizontal position.
 	 * @return physical body's X.
 	 */
+	/*
 	public float getX() {
 		return body.x;
 	}
 	
-	/**
-	 * Returns body's vertical position.
-	 * @return physical body's Y.
-	 */
+	
 	public float getY() {
 		return body.y;
-	}
+	} */
+	
 	
 	public void takeDamage(final float damage) {
 		health -= damage;
@@ -289,10 +259,10 @@ public class Player {
 	
 	public void incrementKillCount() {
 		killCount++;
+		score++;
 		if (health != 100) {
 			health++;
 		}
-		score++;
 	}
 	
 	public int getKillCount() {
@@ -311,6 +281,10 @@ public class Player {
 		return score;
 	}
 	
+	public float getPlayerAcceleration() {
+		return playerAcceleration;
+	}
+	
 	public void multMovement(final float mult) {
 		maxVelocity *= mult;
 		playerAcceleration *= mult;
@@ -318,5 +292,13 @@ public class Player {
 			shotTime -= mult * .01f;
 			shotgunTime -= mult * .02f;
 		}
+	}
+	
+	public float getMaxVel() {
+		return maxVelocity;
+	}
+	
+	public void setShotTime(float sT) {
+		shotTime = sT;
 	}
 }

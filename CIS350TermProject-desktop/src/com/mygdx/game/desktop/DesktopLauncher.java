@@ -24,9 +24,9 @@ public class DesktopLauncher {
 		DisplayMode displayMode = LwjglApplicationConfiguration.getDesktopDisplayMode();
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.setFromDisplayMode(displayMode);
-		config.title = "It's party time";
-		//config.fullscreen = false;
-		//new LwjglApplication(new GameEngine(), config);
+		config.title = "Sentient Ball Pit";
+		config.fullscreen = true;
+		//new LwjglApplication(new GameEngine(), config); // bypasses screens
 		new LwjglApplication(new ScreenManager(), config);
 		GameEngine.setWinHeight(displayMode.height);
 		GameEngine.setWinWidth(displayMode.width);

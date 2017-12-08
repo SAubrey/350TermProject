@@ -1,4 +1,4 @@
-package com.mygdx.game;
+package mimics;
 
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
@@ -18,7 +18,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
  * GameEngine so that it can delete it.
  * @author Sean Aubrey, Gabriel Fountain, Brandon Conn
  */
-public class Projectile {
+public class MProjectile {
 	
 	/**  Interval in seconds before Projectile triggers despawn.*/
 	private final float despawnTime = 2.0f;
@@ -66,7 +66,7 @@ public class Projectile {
 	 * @param targetY cursor's Y coordinate in pixels.
 	 * @param bulletDamage projectile's damage
 	 */
-	public Projectile(final float sourceX, final float sourceY,
+	public MProjectile(final float sourceX, final float sourceY,
 			final float targetX, final float targetY, final float bulletDamage) {
 		damage = bulletDamage;
 		dX = targetX - sourceX;
@@ -84,9 +84,9 @@ public class Projectile {
 		bodyDef.type = BodyType.DynamicBody;
 		vec = new Vector2(determineQuadrant());
 		bodyDef.position.set(sourceX + vec.x, sourceY + vec.y);
-		solidBody = GameEngine.getWorld().createBody(bodyDef);
+		//solidBody = GameEngine.getWorld().createBody(bodyDef);
 		circle = new CircleShape();
-		circle.setRadius(GameEngine.getProjRadius());
+		//circle.setRadius(GameEngine.getProjRadius());
 		
 		fixtureDef = new FixtureDef();
 		fixtureDef.shape = circle;
@@ -107,7 +107,7 @@ public class Projectile {
 		Vector2 vel = new Vector2();
 		float slope = Math.abs(dX / dY);
 		if (dX > 0) {
-			if (dY >= 0) {
+			if (dY > 0) {
 				vel.x = maxVelocity * (slope / (slope + 1));
 				vel.y = maxVelocity * (1 / (slope + 1));
 			} else if (dY < 0) {
@@ -115,7 +115,7 @@ public class Projectile {
 				vel.y = -maxVelocity * (1 / (slope + 1));
 			}
 		} else if (dX < 0) {
-			if (dY >= 0) {
+			if (dY > 0) {
 				vel.x = -maxVelocity * (slope / (slope + 1));
 				vel.y = maxVelocity * (1 / (slope + 1));
 			} else if (dY < 0) {

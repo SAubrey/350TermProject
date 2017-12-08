@@ -119,7 +119,7 @@ public class GameEngine extends ScreenAdapter {
 	
 	private final ScreenManager sM;
 	
-	private SpriteBatch batch = new SpriteBatch();
+	private SpriteBatch batch;
 	
 	/**
 	 * Called once at creation to set up initial graphical objects 
@@ -129,6 +129,7 @@ public class GameEngine extends ScreenAdapter {
 	public GameEngine(final ScreenManager screenManager) {
 		this.sM = screenManager;
 		sr = new ShapeRenderer();
+		batch = new SpriteBatch();
 
 		world = new World(new Vector2(0, 0), true);
 		viewportHeight = (int) scale(windowHeight);
@@ -164,17 +165,13 @@ public class GameEngine extends ScreenAdapter {
 	public void render(final float delta) {
 		switch (state) {
 		case RUN:
-			checkResized();
 			x = player.getX();
 			y = player.getY();
-			player.setPos();
 			eMan.update(x, y, getDeltaTime());
 
 			checkMovement();
 			checkClick();
 			updateGraphics();
-			camera.update();
-
 			world.step(1 / 60f, 6, 2);
 			break;
 		case PAUSE:
@@ -220,6 +217,8 @@ public class GameEngine extends ScreenAdapter {
 		batch.setColor(1, 1 * hRatio, 1 * hRatio, .8f);
 		batch.draw(healthBar, 0, 0, viewportWidth * hRatio, 0.5f);
 		batch.end();
+		
+		camera.update();
 	}
 	
 	public void flashRed() {
@@ -261,7 +260,6 @@ public class GameEngine extends ScreenAdapter {
 	 * those that match. Also updates each body's graphical position.
 	 */
 	private void manageBodies() {
-		player.manageProjectiles(getDeltaTime());
 		world.getBodies(bodies);
 		for (Body b : bodies) {
 			
@@ -308,7 +306,7 @@ public class GameEngine extends ScreenAdapter {
 		} else if (Gdx.input.isKeyPressed(Input.Keys.S)) {
 			down = true;
 		}
-		player.move(right, left, up, down);
+		player.update(right, left, up, down, getDeltaTime());
 	}
 	
 	/**
@@ -329,6 +327,7 @@ public class GameEngine extends ScreenAdapter {
 	 * Checks if the window has been resized and retrieves
 	 * and assigns their new values.
 	 */
+	/*
 	private void checkResized() {
 		if (Gdx.graphics.getWidth() != windowWidth 
 				|| Gdx.graphics.getHeight() != windowHeight) {
@@ -337,6 +336,7 @@ public class GameEngine extends ScreenAdapter {
 			resize(windowWidth, windowHeight);
 		}
 	}
+	*/
 	
 	/**
 	 * Adjusts camera view to new window dimensions.
@@ -502,6 +502,10 @@ public class GameEngine extends ScreenAdapter {
 	 */
 	public static int getViewWidth() {
 		return viewportWidth;
+	}
+	
+	public void setWorld(World world) {
+		GameEngine.world = world;
 	}
 	
 	/**

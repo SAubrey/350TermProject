@@ -4,6 +4,24 @@ sourceCompatibility = 1.6
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
 sourceSets.main.java.srcDirs = [ "src/" ]
+sourceSets.test.java.srcDirs = ["/tests"]
+
+dependencies {
+    compile "com.badlogicgames.gdx:gdx:$gdxVersion"
+    compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
+    compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
+    compile "net.onedaybeard.artemis:artemis-odb:$artemisVersion"
+    compile "net.onedaybeard.artemis:artemis-odb-serializer-json-libgdx:2.0.0"
+
+    testCompile "junit:junit:4.12"
+    testCompile "org.mockito:mockito-core:2.12.2"
+
+    testCompile "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
+    testCompile "com.badlogicgames.gdx:gdx:$gdxVersion"
+    testCompile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+    testCompile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
+    testCompile "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
+}
 
 
 eclipse.project {

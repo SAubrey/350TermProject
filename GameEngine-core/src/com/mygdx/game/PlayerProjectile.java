@@ -25,6 +25,6 @@ public class PlayerProjectile extends Projectile {
 		buildBody(sourceX, sourceY);
 		getFixture().setUserData(this);
 		getBody().setUserData("playerProj");
-		calculateVelocity();
+		getBody().setLinearVelocity(calculateVelocity());
 	}
 }
