@@ -2,6 +2,8 @@ package com.mygdx.game;
 
 /**
  * Subclass of Projectile.
+ * 
+ * @author Sean Aubrey, Gabriel Fountain, Brandon Conn
  */
 public class PlayerProjectile extends Projectile {
 	

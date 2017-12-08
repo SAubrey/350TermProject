@@ -25,6 +25,7 @@ public class Projectile {
 	
 	/**  Velocity limit.*/
 	private int maxVelocity;
+	
 	/** */
 	private float damage;
 	
@@ -33,6 +34,7 @@ public class Projectile {
 	
 	/** */
 	private float dX;
+	
 	/** */
 	private float dY;
 	

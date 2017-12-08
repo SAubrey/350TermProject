@@ -1,11 +1,22 @@
 package com.mygdx.game;
 
+/**
+ * 
+ * @author Sean Aubrey, Gabriel Fountain, Brandon Conn
+ */
 public class Spitter extends Enemy {
 	
+	/**   */
 	private float spitAccumulator;
 	
+	/**   */
 	private float spitInterval = 3.0f;
 	
+	/**
+	 * 
+	 * @param spawnX
+	 * @param spawnY
+	 */
 	public Spitter(final float spawnX, final float spawnY) {
 		super(spawnX, spawnY);
 		setHealth(30f);
@@ -17,6 +28,11 @@ public class Spitter extends Enemy {
 		getFixture().setUserData(this);
 	}
 	
+	/**
+	 * 
+	 * @param x
+	 * @param y
+	 */
 	@Override
 	public void update(final float x, final float y) {
 		setPlayerX(x);

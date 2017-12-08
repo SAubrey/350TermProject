@@ -12,9 +12,9 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 
 /**
- * Enemy class acts as the parent class for all Enemy 
- * children. 
- *
+ * Enemy class acts as the parent class for all Enemy children
+ * 
+ * @author Sean Aubrey, Gabriel Fountain, Brandon Conn
  */
 public class Enemy {
 	
@@ -135,6 +135,9 @@ public class Enemy {
 		solidBody.applyLinearImpulse(x, y, 0, 0, true);
 	}
 	
+	/**
+	 * 
+	 */
 	public void calculateVelocity() {
 		if (accumulator > 1.0f) {
 			Vector2 vel = new Vector2();
@@ -191,6 +194,11 @@ public class Enemy {
 		getProjectiles().add(p);
 	}
 	
+	/**
+	 * 
+	 * @param damage
+	 * @return
+	 */
 	public boolean takeDamage(final float damage) {
 		health -= damage;
 		if (health <= 0) {
@@ -208,32 +216,60 @@ public class Enemy {
 		}
 	}
 	
+	/**
+	 * 
+	 * @param health
+	 */
 	public void setHealth(final float health) {
 		this.health = health;
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public float getHealth() {
 		return health;
 	}
 	
+	/**
+	 * 
+	 * @param mult
+	 */
 	public void multHealth(final float mult) {
 		health *= mult;
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public float getBodyDamage() {
 		return bodyDamage;
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public boolean setDeletable() {
 		purgeProjectiles();
 		solidBody.setUserData("deletable");
 		return false;
 	}
 	
+	/**
+	 * 
+	 * @param mult
+	 */
 	public void multMaxVelocity(final float mult) {
 		maxVelocity *= mult;
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public ArrayList<EnemyProjectile> getProjectiles() {
 		return projectiles;
 	}
@@ -246,6 +282,10 @@ public class Enemy {
 		return solidBody;
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public Circle getShapeBody() {
 		return body;
 	}
@@ -258,6 +298,10 @@ public class Enemy {
 		return fixture;
 	}
 	
+	/**
+	 * 
+	 * @param damage
+	 */
 	public void setBodyDamage(final float damage) {
 		bodyDamage = damage;
 	}
@@ -270,14 +314,26 @@ public class Enemy {
 		maxVelocity = v;
 	}
 	
+	/**
+	 * 
+	 * @param pos
+	 */
 	public void setPosition(final Vector2 pos) {
 		position = pos;
 	}
 	
+	/**
+	 * 
+	 * @param dt
+	 */
 	public void incAccumulator(final float dt) {
 		accumulator += dt;
 	}
 	
+	/**
+	 * 
+	 * @param d
+	 */
 	public void setBulletDamage(final int d) {
 		bulletDamage = d;
 	}

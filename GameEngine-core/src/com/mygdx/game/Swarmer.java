@@ -1,7 +1,16 @@
 package com.mygdx.game;
 
+/**
+ * 
+ * @author Sean Aubrey, Gabriel Fountain, Brandon Conn
+ */
 public class Swarmer extends Enemy {
 	
+	/**
+	 * 
+	 * @param spawnX
+	 * @param spawnY
+	 */
 	public Swarmer(final float spawnX, final float spawnY) {
 		super(spawnX, spawnY);
 		setMaxVelocity(60f);
@@ -13,6 +22,11 @@ public class Swarmer extends Enemy {
 		getFixture().setUserData(this);
 	}
 	
+	/**
+	 * 
+	 * @param x
+	 * @param y
+	 */
 	@Override
 	public void update(final float x, final float y) {
 		setPlayerX(x);

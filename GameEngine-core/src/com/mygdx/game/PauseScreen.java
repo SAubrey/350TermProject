@@ -19,18 +19,43 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 
+/**
+ * 
+ * @author Sean Aubrey, Gabriel Fountain, Brandon Conn
+ */
 public class PauseScreen extends ScreenAdapter {
 
+	/**   */
 	private SpriteBatch batch;
+	
+	/**   */
 	private BitmapFont font;
+	
+	/**   */
 	private final ScreenManager sM;
+	
+	/**   */
 	private final GameEngine gE;
+	
+	/**   */
 	private OrthographicCamera camera;
+	
+	/**   */
 	private Stage stage;
+	
+	/**   */
 	private Table table;
+	
+	/**   */
 	private Skin skin;
+	
+	/**   */
 	private TextButtonStyle style;
+	
+	/**   */
 	private TextButton resume;
+	
+	/**   */
 	private TextButton quit;
 	
 	/**  Y value in pixels.*/
@@ -39,6 +64,11 @@ public class PauseScreen extends ScreenAdapter {
 	/**  X value in pixels.*/
 	private int windowWidth;
 
+	/**
+	 * 
+	 * @param screenManager
+	 * @param gE
+	 */
 	public PauseScreen(final ScreenManager screenManager, final GameEngine gE) {
 		this.sM = screenManager;
 		this.gE = gE;
@@ -82,6 +112,9 @@ public class PauseScreen extends ScreenAdapter {
 		addListeners();
 	}
 	
+	/**
+	 * 
+	 */
 	private void addListeners() {
 		resume.addListener(new ChangeListener() {
 			public void changed(final ChangeEvent event, final Actor resume) {
@@ -98,6 +131,10 @@ public class PauseScreen extends ScreenAdapter {
 		});
 	}
 	
+	/**
+	 * 
+	 * @param delta
+	 */
 	@Override
 	public void render(final float delta) {
 		Gdx.gl.glClearColor(0.05f, 0.05f, 0.05f, 1);

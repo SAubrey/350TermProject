@@ -1,31 +1,53 @@
 package com.mygdx.game;
 
+/**
+ * 
+ * @author Sean Aubrey, Gabriel Fountain, Brandon Conn
+ *
+ */
 public class Demon extends Enemy {
 	
+	/**   */
 	private float deltaTime;
 	
+	/**   */
 	private float spitAccumulator;
 	
+	/**   */
 	private float chargeAccumulator;
 	
+	/**   */
 	private float preChargeAccumulator;
 	
+	/**   */
 	private boolean charging = false;
 	
+	/**   */
 	private boolean charged = false;
 	
+	/**   */
 	private float spitInterval = 1.0f;
 	
+	/**   */
 	private float chargeTime = 5.0f;
 	
+	/**   */
 	private float preChargeTime = 0.6f;
 	
+	/**   */
 	private float endChargeTime;
 	
+	/**   */
 	private float multiplier;
 	
+	/**   */
 	private float initialHealth;
 	
+	/**
+	 * 
+	 * @param spawnX
+	 * @param spawnY
+	 */
 	public Demon(final float spawnX, final float spawnY) {
 		super(spawnX, spawnY);
 		setMaxVelocity(50f);
@@ -41,6 +63,12 @@ public class Demon extends Enemy {
 		
 	}
 	
+	/**
+	 * 
+	 * 
+	 * @param x
+	 * @param y
+	 */
 	@Override
 	public void update(final float x, final float y) {
 		setPlayerX(x);
@@ -105,6 +133,9 @@ public class Demon extends Enemy {
 		
 	}
 	
+	/**
+	 * 
+	 */
 	private void checkEnraged() {
 		if (getHealth() <= initialHealth * 0.6f) {
 			spitInterval = 0.5f;
@@ -119,7 +150,9 @@ public class Demon extends Enemy {
 	}
 	
 	
-	
+	/**
+	 * 
+	 */
 	@Override
 	public boolean setDeletable() {
 		purgeProjectiles();
@@ -127,6 +160,10 @@ public class Demon extends Enemy {
 		return true;
 	}
 	
+	/**
+	 * 
+	 * @param mult
+	 */
 	public void setMultiplier(final float mult) {
 		multiplier = mult;
 		multHealth(mult);

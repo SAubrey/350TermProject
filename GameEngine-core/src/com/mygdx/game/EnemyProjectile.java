@@ -2,7 +2,10 @@ package com.mygdx.game;
 
 /**
  * Subclass of Projectile. Fired from all enemies.
+ * 
+ * @author Sean Aubrey, Gabriel Fountain, Brandon Conn
  */
+
 public class EnemyProjectile extends Projectile {
 	
 	/**
